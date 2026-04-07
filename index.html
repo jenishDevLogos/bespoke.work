@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Bespoke — Built around how you work.</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Geist+Mono:wght@300;400;500&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#07080A;
+  --black2:#0B0C0F;
+  --black3:#101215;
+  --black4:#161820;
+  --black5:#1C1F28;
+  --gold:#C9A84C;
+  --gold2:#E2C06A;
+  --gold3:#F0D48A;
+  --gold4:#F8E9C0;
+  --gold-dim:rgba(201,168,76,0.08);
+  --gold-dim2:rgba(201,168,76,0.14);
+  --gold-border:rgba(201,168,76,0.22);
+  --gold-border2:rgba(201,168,76,0.35);
+  --gold-glow:rgba(201,168,76,0.18);
+  --white:#F4F1EC;
+  --white2:#C8C4BC;
+  --white3:#7A7670;
+  --white4:#3A3830;
+  --border:rgba(255,255,255,0.05);
+  --border2:rgba(255,255,255,0.09);
+  --display:'Cormorant Garamond',serif;
+  --mono:'Geist Mono',monospace;
+  --body:'Geist',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:var(--body);overflow-x:hidden;cursor:none}
+
+/* ── CURSOR ── */
+#cur{position:fixed;width:5px;height:5px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s}
+#cur-ring{position:fixed;width:32px;height:32px;border:1px solid var(--gold-border);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .2s,height .2s,border-color .2s}
+
+/* ── TEXTURE ── */
+.grain{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* fine diagonal lines */
+.lines{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.025;
+  background-image:repeating-linear-gradient(45deg,var(--gold) 0,var(--gold) .5px,transparent 0,transparent 50%);
+  background-size:24px 24px}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:24px 56px;display:flex;align-items:center;justify-content:space-between;transition:all .4s}
+nav.scrolled{background:rgba(7,8,10,.92);border-bottom:1px solid var(--border);backdrop-filter:blur(28px)}
+.logo{font-family:var(--display);font-weight:600;font-size:22px;letter-spacing:3px;text-transform:uppercase;text-decoration:none;color:var(--white);display:flex;align-items:center;gap:14px}
+.logo-gem{width:8px;height:8px;background:var(--gold);transform:rotate(45deg);flex-shrink:0;box-shadow:0 0 12px var(--gold-glow)}
+.nav-links{display:flex;gap:36px;list-style:none}
+.nav-links a{color:var(--white3);text-decoration:none;font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;transition:color .2s}
+.nav-links a:hover{color:var(--gold2)}
+.nav-right{display:flex;align-items:center;gap:14px}
+.btn-nav-ghost{background:transparent;border:1px solid var(--border2);color:var(--white3);padding:10px 20px;border-radius:2px;font-family:var(--mono);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;cursor:none;transition:all .2s}
+.btn-nav-ghost:hover{border-color:var(--gold-border);color:var(--gold2)}
+.btn-nav-gold{background:var(--gold);color:var(--black);border:none;padding:11px 22px;border-radius:2px;font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:none;transition:all .25s;font-weight:500}
+.btn-nav-gold:hover{background:var(--gold2);box-shadow:0 8px 32px var(--gold-glow);transform:translateY(-1px)}
+
+/* ── HERO ── */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:140px 56px 100px;text-align:center;z-index:2;overflow:hidden}
+
+.hero-glow{position:absolute;width:800px;height:600px;background:radial-gradient(ellipse,rgba(201,168,76,.09) 0%,rgba(201,168,76,.03) 40%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-55%);pointer-events:none;animation:glow-pulse 7s ease-in-out infinite}
+@keyframes glow-pulse{0%,100%{opacity:1;transform:translate(-50%,-55%) scale(1)}50%{opacity:.6;transform:translate(-50%,-55%) scale(1.12)}}
+
+.hero-rule{width:1px;height:60px;background:linear-gradient(180deg,transparent,var(--gold),transparent);margin:0 auto 40px;animation:rise .8s ease forwards;opacity:0}
+
+.hero-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:32px;animation:rise .8s ease .1s forwards;opacity:0}
+
+.hero h1{font-family:var(--display);font-weight:300;font-size:clamp(68px,10vw,130px);line-height:.92;letter-spacing:-1px;margin-bottom:16px;animation:rise .9s ease .2s forwards;opacity:0}
+.hero h1 em{font-style:italic;color:var(--gold);display:block}
+.hero h1 em::after{content:'';display:block;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin-top:8px;opacity:.5}
+
+.hero-tagline{font-family:var(--mono);font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--white3);margin-bottom:56px;animation:rise .9s ease .3s forwards;opacity:0}
+
+.hero-ctas{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;animation:rise .9s ease .4s forwards;opacity:0;margin-bottom:80px}
+.btn-gold-lg{background:var(--gold);color:var(--black);border:none;padding:18px 40px;border-radius:2px;font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:none;transition:all .25s;font-weight:500}
+.btn-gold-lg:hover{background:var(--gold2);box-shadow:0 16px 48px var(--gold-glow);transform:translateY(-2px)}
+.btn-ghost-lg{background:transparent;color:var(--white3);border:1px solid var(--border2);padding:18px 40px;border-radius:2px;font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:none;transition:all .25s}
+.btn-ghost-lg:hover{border-color:var(--gold-border);color:var(--gold2);transform:translateY(-2px)}
+
+/* PROFESSION SWITCHER */
+.prof-switcher{width:100%;max-width:900px;animation:rise .9s ease .5s forwards;opacity:0}
+.sw-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--white4);margin-bottom:16px}
+.sw-tabs{display:flex;gap:0;border:1px solid var(--border);border-radius:2px;overflow:hidden;margin-bottom:1px}
+.sw-tab{flex:1;background:var(--black2);border:none;color:var(--white3);padding:12px 8px;font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;cursor:none;transition:all .2s;border-right:1px solid var(--border)}
+.sw-tab:last-child{border-right:none}
+.sw-tab:hover,.sw-tab.active{background:var(--gold-dim);color:var(--gold2)}
+.sw-preview{background:var(--black2);border:1px solid var(--border);padding:28px 32px;position:relative;overflow:hidden;min-height:140px}
+.sw-preview::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.6}
+.sw-panel{display:none}
+.sw-panel.active{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;animation:fadein .4s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.sw-widget{border:1px solid var(--border);padding:16px;position:relative;overflow:hidden}
+.sw-widget::before{content:'';position:absolute;top:0;left:0;width:2px;height:100%;background:var(--gold);opacity:.4}
+.sww-label{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--white4);margin-bottom:8px}
+.sww-val{font-family:var(--display);font-size:28px;font-weight:500;letter-spacing:-.5px;color:var(--white)}
+.sww-val .g{color:var(--gold2)}
+.sww-val .gr{color:#6FCF97}
+.sww-val .am{color:#F2994A}
+.sww-sub{font-size:12px;color:var(--white3);margin-top:4px;font-family:var(--mono);font-size:10px}
+.sww-bar{height:2px;background:var(--border);margin-top:12px}
+.sww-bar-fill{height:100%;background:var(--gold);transition:width 1s ease}
+.sw-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(111,207,151,.08);border:1px solid rgba(111,207,151,.2);color:#6FCF97;padding:3px 8px;font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;margin-top:8px}
+
+@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+.scroll-line{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;animation:rise 1s ease 1.4s forwards;opacity:0}
+.sl-bar{width:1px;height:48px;background:linear-gradient(180deg,var(--gold),transparent);animation:sl 2.5s ease infinite}
+@keyframes sl{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ── DIVIDERS ── */
+hr.div{border:none;border-top:1px solid var(--border);position:relative;z-index:2}
+.ornament{display:flex;align-items:center;justify-content:center;gap:16px;padding:20px 0;position:relative;z-index:2}
+.orn-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--border))}
+.orn-line.r{background:linear-gradient(270deg,transparent,var(--border))}
+.orn-gem{width:6px;height:6px;background:var(--gold);transform:rotate(45deg);opacity:.6}
+
+/* ── MARQUEE ── */
+.mq{border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--black2);padding:12px 0;overflow:hidden;position:relative;z-index:2}
+.mq-track{display:flex;animation:mq 35s linear infinite;width:max-content}
+.mq-item{display:flex;align-items:center;gap:10px;padding:0 32px;font-family:var(--mono);font-size:10px;color:var(--white4);white-space:nowrap;letter-spacing:2px;text-transform:uppercase}
+.mq-gem{color:var(--gold);font-size:8px}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── SECTIONS ── */
+.sec{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:100px 56px}
+.sec-label{font-family:var(--mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.sec-label::before{content:'';width:24px;height:1px;background:var(--gold);display:block;opacity:.6}
+.sec-title{font-family:var(--display);font-size:clamp(44px,6vw,76px);font-weight:300;letter-spacing:-1px;line-height:1.0;margin-bottom:20px}
+.sec-title em{font-style:italic;color:var(--gold2)}
+.sec-sub{font-size:16px;color:var(--white3);line-height:1.8;max-width:480px;font-weight:300}
+
+/* ── PHILOSOPHY ── */
+.phil-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);margin-top:64px;border:1px solid var(--border)}
+.phil-card{background:var(--black2);padding:48px;position:relative;overflow:hidden;transition:background .3s}
+.phil-card:hover{background:var(--black3)}
+.phil-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .4s}
+.phil-card:hover::after{opacity:.5}
+.phil-num{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:24px;opacity:.7}
+.phil-card h3{font-family:var(--display);font-size:26px;font-weight:400;letter-spacing:-.3px;margin-bottom:12px;line-height:1.2}
+.phil-card h3 em{font-style:italic;color:var(--gold2)}
+.phil-card p{font-size:14px;color:var(--white3);line-height:1.75;font-weight:300}
+
+/* ── PROFESSIONS ── */
+.pdepth-tabs{display:flex;gap:0;border:1px solid var(--border);overflow:hidden;margin-top:56px}
+.pdepth-tab{flex:1;background:var(--black2);border:none;color:var(--white3);padding:16px 8px;font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;cursor:none;transition:all .2s;border-right:1px solid var(--border)}
+.pdepth-tab:last-child{border-right:none}
+.pdepth-tab:hover,.pdepth-tab.active{background:var(--gold-dim2);color:var(--gold2)}
+.pdepth-panel{display:none;margin-top:1px;border:1px solid var(--border)}
+.pdepth-panel.active{display:grid;grid-template-columns:1fr 1fr;animation:fadein .4s ease}
+.pd-left{background:var(--black2);padding:52px;border-right:1px solid var(--border)}
+.pd-right{background:var(--black3);padding:52px}
+.pd-roman{font-family:var(--display);font-size:13px;font-weight:400;color:var(--gold);letter-spacing:2px;margin-bottom:20px;font-style:italic}
+.pd-left h3{font-family:var(--display);font-size:32px;font-weight:400;letter-spacing:-.5px;margin-bottom:6px;line-height:1.1}
+.pd-role{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--white4);margin-bottom:24px}
+.pd-left p{font-size:15px;color:var(--white3);line-height:1.75;margin-bottom:28px;font-weight:300}
+.pd-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:32px}
+.pd-chip{background:var(--gold-dim);border:1px solid var(--gold-border);color:var(--gold3);padding:5px 14px;font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase}
+.pd-quote{border-left:1px solid var(--gold);padding:16px 20px;font-family:var(--display);font-size:17px;font-style:italic;color:var(--white3);line-height:1.6;opacity:.8}
+.pd-right h4{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--white4);margin-bottom:24px}
+.pd-widgets{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.pdw{background:var(--black2);border:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;transition:border-color .2s}
+.pdw:hover{border-color:var(--gold-border)}
+.pdw-label{font-size:13px;color:var(--white3);font-weight:300}
+.pdw-val{font-family:var(--display);font-size:20px;font-weight:500}
+.pdw-val.gold{color:var(--gold2)}
+.pdw-val.green{color:#6FCF97}
+.pdw-val.amber{color:#F2994A}
+.pd-chat{background:var(--black2);border:1px solid var(--border);padding:20px}
+.pdc-header{display:flex;align-items:center;gap:10px;padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:14px}
+.pdc-gem{width:28px;height:28px;background:var(--gold);display:grid;place-items:center;font-size:12px;color:var(--black);font-weight:600;font-family:var(--mono);flex-shrink:0}
+.pdc-name{font-family:var(--display);font-size:14px;font-weight:500}
+.pdc-status{font-family:var(--mono);font-size:9px;color:#6FCF97;letter-spacing:1px;text-transform:uppercase}
+.msg{margin-bottom:10px}
+.msg.u{text-align:right}
+.mi{display:inline-block;padding:10px 14px;font-size:12.5px;line-height:1.5;max-width:88%;text-align:left}
+.msg.b .mi{background:var(--black3);border:1px solid var(--border);color:var(--white2)}
+.msg.u .mi{background:var(--gold);color:var(--black);font-weight:500}
+
+/* ── DATA SECTION ── */
+.data-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;margin-top:64px}
+.data-diagram{background:var(--black2);border:1px solid var(--border);padding:36px;position:relative}
+.data-diagram::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.6}
+.dd-label{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:24px;opacity:.7}
+.df-multi{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
+.df-node{border:1px solid var(--border);padding:12px 14px;background:var(--black3)}
+.df-node.gold{border-color:var(--gold-border);background:var(--gold-dim)}
+.df-node.cyan{border-color:rgba(100,200,255,.2);background:rgba(100,200,255,.04)}
+.df-node.green{border-color:rgba(111,207,151,.2);background:rgba(111,207,151,.04)}
+.df-node-lbl{font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--white4);margin-bottom:5px}
+.df-node-val{font-size:12px;color:var(--white2)}
+.df-node.gold .df-node-val{color:var(--gold3)}
+.df-node.green .df-node-val{color:#6FCF97}
+.df-arrow{text-align:center;font-family:var(--mono);font-size:11px;color:var(--white4);padding:10px 0;letter-spacing:1px}
+.data-points{display:flex;flex-direction:column;gap:28px}
+.dp{display:flex;gap:20px;align-items:flex-start}
+.dp-line{width:1px;height:100%;background:var(--border);flex-shrink:0;margin-top:4px;width:1px;min-height:60px;background:linear-gradient(180deg,var(--gold),transparent);opacity:.4}
+.dp h4{font-family:var(--display);font-size:19px;font-weight:400;letter-spacing:-.2px;margin-bottom:6px}
+.dp p{font-size:14px;color:var(--white3);line-height:1.7;font-weight:300}
+
+/* ── PRICING ── */
+.pricing-wrap{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);margin-top:64px;border:1px solid var(--border)}
+.pc{background:var(--black2);padding:40px;position:relative;transition:background .3s}
+.pc:hover{background:var(--black3)}
+.pc.hot{background:var(--black3)}
+.pc.hot::before{content:'Most Popular';position:absolute;top:0;right:0;background:var(--gold);color:var(--black);font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:5px 14px;font-weight:500}
+.pc-tier{font-family:var(--mono);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;opacity:.8}
+.pc-price{font-family:var(--display);font-size:56px;font-weight:300;letter-spacing:-2px;line-height:1;margin-bottom:6px}
+.pc-price sup{font-size:22px;vertical-align:super;color:var(--white3)}
+.pc-price .mo{font-size:16px;color:var(--white3);letter-spacing:0}
+.pc-desc{font-size:13px;color:var(--white3);margin-bottom:28px;line-height:1.6;font-weight:300}
+.pc-rule{height:1px;background:var(--border);margin-bottom:24px}
+.pc-feats{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:32px}
+.pc-feats li{font-size:13px;color:var(--white3);display:flex;align-items:center;gap:10px;font-weight:300}
+.pc-feats li::before{content:'◆';color:var(--gold);font-size:7px;flex-shrink:0;opacity:.7}
+.pc-btn{width:100%;padding:14px;font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:none;transition:all .2s;border:1px solid var(--border2);background:transparent;color:var(--white3)}
+.pc-btn:hover{border-color:var(--gold-border);color:var(--gold2)}
+.pc-btn.hot{background:var(--gold);color:var(--black);border-color:transparent;font-weight:500}
+.pc-btn.hot:hover{background:var(--gold2);box-shadow:0 8px 32px var(--gold-glow)}
+
+/* ── CTA ── */
+.cta-wrap{max-width:1200px;margin:0 auto;padding:80px 56px 120px;text-align:center}
+.cta-inner{background:var(--black2);border:1px solid var(--border);padding:100px 60px;position:relative;overflow:hidden}
+.cta-inner::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.cta-inner::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.3}
+.cta-glow{position:absolute;width:600px;height:400px;background:radial-gradient(ellipse,rgba(201,168,76,.07) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.cta-inner h2{font-family:var(--display);font-size:clamp(44px,6vw,80px);font-weight:300;letter-spacing:-1.5px;margin-bottom:16px;position:relative;z-index:1;line-height:1}
+.cta-inner h2 em{font-style:italic;color:var(--gold2)}
+.cta-inner p{font-size:16px;color:var(--white3);margin-bottom:48px;line-height:1.75;position:relative;z-index:1;font-weight:300}
+.email-row{display:flex;gap:0;max-width:480px;margin:0 auto;position:relative;z-index:1;border:1px solid var(--border2)}
+.email-inp{flex:1;background:transparent;border:none;color:var(--white);padding:16px 20px;font-family:var(--body);font-size:14px;outline:none}
+.email-inp::placeholder{color:var(--white4)}
+.email-btn{background:var(--gold);color:var(--black);border:none;padding:16px 28px;font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:none;transition:all .2s;white-space:nowrap;font-weight:500}
+.email-btn:hover{background:var(--gold2)}
+.cta-note{font-family:var(--mono);font-size:10px;color:var(--white4);margin-top:16px;position:relative;z-index:1;letter-spacing:1px;text-transform:uppercase}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);padding:36px 56px;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2;flex-wrap:wrap;gap:16px}
+.foot-logo{font-family:var(--display);font-weight:400;font-size:18px;letter-spacing:3px;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.foot-gem{width:6px;height:6px;background:var(--gold);transform:rotate(45deg);opacity:.7}
+.foot-links{display:flex;gap:28px;list-style:none}
+.foot-links a{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--white4);text-decoration:none;transition:color .2s}
+.foot-links a:hover{color:var(--gold)}
+.foot-copy{font-family:var(--mono);font-size:10px;color:var(--white4);letter-spacing:1px;text-transform:uppercase}
+
+/* ── REVEAL ── */
+.rv{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s ease}
+.rv.in{opacity:1;transform:translateY(0)}
+.rv-d1{transition-delay:.12s}.rv-d2{transition-delay:.22s}.rv-d3{transition-delay:.32s}
+
+@media(max-width:768px){
+  nav{padding:16px 24px}
+  .nav-links,.nav-right .btn-nav-ghost{display:none}
+  .hero{padding:110px 24px 80px}
+  .sw-panel.active,.df-multi,.phil-grid,.pdepth-panel,.data-grid,.pricing-wrap{grid-template-columns:1fr}
+  .pdepth-tabs{flex-wrap:wrap}
+  .sec{padding:60px 24px}
+  .cta-inner{padding:56px 24px}
+  .email-row{flex-direction:column;border:none;gap:8px}
+  .email-inp{border:1px solid var(--border2);padding:14px 16px}
+  footer{flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="cur-ring"></div>
+<div class="grain"></div>
+<div class="lines"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="logo"><div class="logo-gem"></div>Bespoke</a>
+  <ul class="nav-links">
+    <li><a href="#philosophy">Philosophy</a></li>
+    <li><a href="#professions">Professions</a></li>
+    <li><a href="#data">Your Data</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="btn-nav-ghost">Sign in</button>
+    <button class="btn-nav-gold">Begin →</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-rule"></div>
+  <div class="hero-eyebrow">Introducing Bespoke · Now in private access</div>
+  <h1>Your work.<br/><em>Made for you.</em></h1>
+  <p class="hero-tagline">Built around how you work.</p>
+
+  <div class="hero-ctas">
+    <button class="btn-gold-lg">Request access — 14 days free</button>
+    <button class="btn-ghost-lg">Watch it work</button>
+  </div>
+
+  <!-- SWITCHER -->
+  <div class="prof-switcher">
+    <div class="sw-eyebrow">Your profession. Your dashboard. No one else's.</div>
+    <div class="sw-tabs">
+      <button class="sw-tab active" data-p="clinic">Physio Clinic</button>
+      <button class="sw-tab" data-p="tutor">Training Center</button>
+      <button class="sw-tab" data-p="gtm">GTM Leader</button>
+      <button class="sw-tab" data-p="pm">Product Manager</button>
+      <button class="sw-tab" data-p="church">Church Manager</button>
+      <button class="sw-tab" data-p="band">Band Manager</button>
+    </div>
+    <div class="sw-preview">
+
+      <div class="sw-panel active" id="sp-clinic">
+        <div class="sw-widget"><div class="sww-label">Today's appointments</div><div class="sww-val"><span class="g">8</span> / 10</div><div class="sww-sub">2 slots remaining</div><div class="sww-bar"><div class="sww-bar-fill" style="width:80%"></div></div></div>
+        <div class="sw-widget"><div class="sww-label">No-show alerts</div><div class="sww-val am">⚠ 2</div><div class="sww-sub">Auto follow-up sent</div><div class="sw-badge">✓ Handled</div></div>
+        <div class="sw-widget"><div class="sww-label">Revenue this month</div><div class="sww-val"><span class="gr">$12,480</span></div><div class="sww-sub">↑ 14% vs last month</div><div class="sww-bar"><div class="sww-bar-fill" style="width:72%"></div></div></div>
+      </div>
+
+      <div class="sw-panel" id="sp-tutor">
+        <div class="sw-widget"><div class="sww-label">Active students</div><div class="sww-val"><span class="g">47</span></div><div class="sww-sub">3 enrolled this week</div><div class="sww-bar"><div class="sww-bar-fill" style="width:65%"></div></div></div>
+        <div class="sw-widget"><div class="sww-label">Fees outstanding</div><div class="sww-val am">6 students</div><div class="sww-sub">Reminders auto-sent</div><div class="sw-badge">✓ Handled</div></div>
+        <div class="sw-widget"><div class="sww-label">Top performer</div><div class="sww-val gr" style="font-size:20px">Aisha K.</div><div class="sww-sub">Score: 94 / 100</div><div class="sww-bar"><div class="sww-bar-fill" style="width:94%"></div></div></div>
+      </div>
+
+      <div class="sw-panel" id="sp-gtm">
+        <div class="sw-widget"><div class="sww-label">Pipeline this quarter</div><div class="sww-val"><span class="gr">$840K</span></div><div class="sww-sub">↑ 22% vs target</div><div class="sww-bar"><div class="sww-bar-fill" style="width:88%"></div></div></div>
+        <div class="sw-widget"><div class="sww-label">Deals at risk</div><div class="sww-val am">⚠ 3</div><div class="sww-sub">No activity 14+ days</div><div class="sw-badge">✓ Staff flagged</div></div>
+        <div class="sw-widget"><div class="sww-label">CAC this month</div><div class="sww-val"><span class="g">$312</span></div><div class="sww-sub">↓ $40 vs last month</div><div class="sww-bar"><div class="sww-bar-fill" style="width:58%"></div></div></div>
+      </div>
+
+      <div class="sw-panel" id="sp-pm">
+        <div class="sw-widget"><div class="sww-label">Sprint velocity</div><div class="sww-val"><span class="gr">42 pts</span></div><div class="sww-sub">↑ 6 pts vs last sprint</div><div class="sww-bar"><div class="sww-bar-fill" style="width:78%"></div></div></div>
+        <div class="sw-widget"><div class="sww-label">Blockers open</div><div class="sww-val am">⚠ 4</div><div class="sww-sub">2 unassigned</div><div class="sw-badge">✓ Escalated</div></div>
+        <div class="sw-widget"><div class="sww-label">Roadmap health</div><div class="sww-val gr" style="font-size:20px">On track</div><div class="sww-sub">Q2 milestone: 3 weeks out</div><div class="sww-bar"><div class="sww-bar-fill" style="width:91%"></div></div></div>
+      </div>
+
+      <div class="sw-panel" id="sp-church">
+        <div class="sw-widget"><div class="sww-label">Sunday attendance</div><div class="sww-val"><span class="g">312</span></div><div class="sww-sub">↑ 8% vs last week</div><div class="sww-bar"><div class="sww-bar-fill" style="width:78%"></div></div></div>
+        <div class="sw-widget"><div class="sww-label">Follow-ups pending</div><div class="sww-val am">⚠ 3</div><div class="sww-sub">Drafts ready to send</div><div class="sw-badge">✓ Drafted</div></div>
+        <div class="sw-widget"><div class="sww-label">Tithes this month</div><div class="sww-val"><span class="gr">$18,240</span></div><div class="sww-sub">↑ 5% vs target</div><div class="sww-bar"><div class="sww-bar-fill" style="width:82%"></div></div></div>
+      </div>
+
+      <div class="sw-panel" id="sp-band">
+        <div class="sw-widget"><div class="sww-label">Upcoming gigs</div><div class="sww-val"><span class="g">6</span></div><div class="sww-sub">Next: Friday, The Venue</div><div class="sww-bar"><div class="sww-bar-fill" style="width:60%"></div></div></div>
+        <div class="sw-widget"><div class="sww-label">Payments pending</div><div class="sww-val am">$3,200</div><div class="sww-sub">2 venues overdue</div><div class="sw-badge">✓ Chasing</div></div>
+        <div class="sw-widget"><div class="sww-label">Revenue this month</div><div class="sww-val"><span class="gr">$9,500</span></div><div class="sww-sub">↑ 18% vs last month</div><div class="sww-bar"><div class="sww-bar-fill" style="width:76%"></div></div></div>
+      </div>
+
+    </div>
+  </div>
+  <div class="scroll-line"><div class="sl-bar"></div></div>
+</section>
+
+<!-- MARQUEE -->
+<div class="mq">
+  <div class="mq-track">
+    <div class="mq-item"><span class="mq-gem">◆</span>Physio Clinic</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>Dental Practice</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>Training Center</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>Private Tutor</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>GTM Leader</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>Sales Manager</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>Product Manager</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>QA Engineer</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>Church Manager</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>Band Manager</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>Accountant</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>Event Planner</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>Vet Clinic</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>Restaurant Owner</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>Physio Clinic</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>Dental Practice</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>Training Center</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>Private Tutor</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>GTM Leader</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>Sales Manager</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>Product Manager</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>QA Engineer</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>Church Manager</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>Band Manager</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>Accountant</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>Event Planner</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>Vet Clinic</div>
+    <div class="mq-item"><span class="mq-gem">◆</span>Restaurant Owner</div>
+  </div>
+</div>
+
+<div class="ornament"><div class="orn-line"></div><div class="orn-gem"></div><div class="orn-line r"></div></div>
+
+<!-- PHILOSOPHY -->
+<section class="sec" id="philosophy">
+  <div class="rv">
+    <div class="sec-label">The philosophy</div>
+    <h2 class="sec-title">Software has never truly<br/><em>fit</em> the way you work.</h2>
+    <p class="sec-sub">Until now. Bespoke builds itself around your profession — not the other way around.</p>
+  </div>
+  <div class="phil-grid rv rv-d1">
+    <div class="phil-card">
+      <div class="phil-num">I</div>
+      <h3>Your app builds <em>itself</em></h3>
+      <p>Every conversation you have shapes your dashboard. Every question you ask becomes a widget. After three months, your Bespoke looks nothing like anyone else's. That's the point.</p>
+    </div>
+    <div class="phil-card">
+      <div class="phil-num">II</div>
+      <h3>Your staff <em>works for you</em></h3>
+      <p>You don't query. You don't check. Your AI staff monitors, tracks, follows up, and surfaces what matters — before you knew to ask. Delivered straight to WhatsApp or Telegram.</p>
+    </div>
+    <div class="phil-card">
+      <div class="phil-num">III</div>
+      <h3>Your data <em>stays yours</em></h3>
+      <p>Every customer gets a dedicated isolated instance. Your data never touches a shared pool. No two Bespoke products share infrastructure. What's yours is exclusively yours.</p>
+    </div>
+    <div class="phil-card">
+      <div class="phil-num">IV</div>
+      <h3>Onboarding is a <em>conversation</em></h3>
+      <p>No forms. No setup wizards. No importing spreadsheets. Bespoke asks how your Monday feels and begins building from your answers. You're working in minutes, not days.</p>
+    </div>
+  </div>
+</section>
+
+<div class="ornament"><div class="orn-line"></div><div class="orn-gem"></div><div class="orn-line r"></div></div>
+
+<!-- PROFESSIONS -->
+<section class="sec" id="professions">
+  <div class="rv">
+    <div class="sec-label">Built for your world</div>
+    <h2 class="sec-title">Every profession.<br/><em>Entirely different.</em></h2>
+    <p class="sec-sub">A physio's Tuesday looks nothing like a GTM leader's. Their Bespoke products don't either.</p>
+  </div>
+
+  <div class="pdepth-tabs rv rv-d1">
+    <button class="pdepth-tab active" data-panel="pd-clinic">Clinic Owner</button>
+    <button class="pdepth-tab" data-panel="pd-tutor">Training Center</button>
+    <button class="pdepth-tab" data-panel="pd-gtm">GTM / Sales</button>
+    <button class="pdepth-tab" data-panel="pd-pm">PM / Engineer</button>
+    <button class="pdepth-tab" data-panel="pd-church">Church Manager</button>
+  </div>
+
+  <!-- CLINIC -->
+  <div class="pdepth-panel active" id="pd-clinic">
+    <div class="pd-left">
+      <div class="pd-roman">I.</div>
+      <h3>Physio · Dental · Vet</h3>
+      <div class="pd-role">Healthcare SMB Owner</div>
+      <p>Your skill is healing. But half your day disappears into appointment chaos, no-show chasing, and billing gaps. Bespoke gives you a staff that handles all of it — so you can focus on patients.</p>
+      <div class="pd-chips">
+        <span class="pd-chip">Appointment Agent</span>
+        <span class="pd-chip">No-show Handler</span>
+        <span class="pd-chip">Billing Tracker</span>
+        <span class="pd-chip">Patient Comms</span>
+      </div>
+      <div class="pd-quote">"I used to spend 2 hours on admin before seeing my first patient. Now my staff handles it before I wake up."</div>
+    </div>
+    <div class="pd-right">
+      <h4>Live dashboard · WhatsApp staff</h4>
+      <div class="pd-widgets">
+        <div class="pdw"><span class="pdw-label">Today's appointments</span><span class="pdw-val gold">8 / 10</span></div>
+        <div class="pdw"><span class="pdw-label">Pending invoices</span><span class="pdw-val amber">$2,140</span></div>
+        <div class="pdw"><span class="pdw-label">Patient retention</span><span class="pdw-val green">91%</span></div>
+        <div class="pdw"><span class="pdw-label">No-shows this week</span><span class="pdw-val amber">2 — followed up</span></div>
+      </div>
+      <div class="pd-chat">
+        <div class="pdc-header"><div class="pdc-gem">B</div><div><div class="pdc-name">Bespoke Staff</div><div class="pdc-status">● Active</div></div></div>
+        <div class="msg b"><div class="mi">Morning Dr. Patel 👋 Mrs. Chen cancelled her 10am. I've offered the slot to 3 waitlisted patients and sent her a rebooking link.</div></div>
+        <div class="msg u"><div class="mi">Great. Any outstanding invoices?</div></div>
+        <div class="msg b"><div class="mi">4 invoices overdue 7+ days. Gentle reminders sent to all. Want me to escalate any?</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TUTOR -->
+  <div class="pdepth-panel" id="pd-tutor">
+    <div class="pd-left">
+      <div class="pd-roman">II.</div>
+      <h3>Training Center · Tutor</h3>
+      <div class="pd-role">Education & Coaching</div>
+      <p>You're building futures — but fee collection, progress tracking, and scheduling are consuming you. Your Bespoke staff handles the admin so you can stay in the teaching.</p>
+      <div class="pd-chips">
+        <span class="pd-chip">Progress Tracker</span>
+        <span class="pd-chip">Fee Reminder</span>
+        <span class="pd-chip">Schedule Manager</span>
+        <span class="pd-chip">Parent Comms</span>
+      </div>
+      <div class="pd-quote">"Chasing fees used to damage my relationship with parents. Now my staff handles it professionally. I never have to ask."</div>
+    </div>
+    <div class="pd-right">
+      <h4>Live dashboard · WhatsApp staff</h4>
+      <div class="pd-widgets">
+        <div class="pdw"><span class="pdw-label">Active students</span><span class="pdw-val gold">47</span></div>
+        <div class="pdw"><span class="pdw-label">Fees outstanding</span><span class="pdw-val amber">6 students</span></div>
+        <div class="pdw"><span class="pdw-label">Avg. score this week</span><span class="pdw-val green">78 / 100</span></div>
+        <div class="pdw"><span class="pdw-label">Top student</span><span class="pdw-val" style="color:var(--gold2)">Aisha K. — 94</span></div>
+      </div>
+      <div class="pd-chat">
+        <div class="pdc-header"><div class="pdc-gem">B</div><div><div class="pdc-name">Bespoke Staff</div><div class="pdc-status">● Active</div></div></div>
+        <div class="msg b"><div class="mi">Hi Sarah 👋 Fee reminders sent to 6 families. Also — James hasn't submitted homework 3 weeks running. Want me to send a kind note to his parents?</div></div>
+        <div class="msg u"><div class="mi">Yes please, in my tone</div></div>
+        <div class="msg b"><div class="mi">Done ✓ Sent warmly. Next week's schedule drafted — 2 conflicts flagged for your review.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GTM -->
+  <div class="pdepth-panel" id="pd-gtm">
+    <div class="pd-left">
+      <div class="pd-roman">III.</div>
+      <h3>GTM Leader · Sales Manager</h3>
+      <div class="pd-role">Revenue & Growth</div>
+      <p>You're accountable for the number. But that number lives across HubSpot, spreadsheets, Slack, and your head simultaneously. Bespoke cuts across all of it and tells you what matters before your 9am.</p>
+      <div class="pd-chips">
+        <span class="pd-chip">Pipeline Monitor</span>
+        <span class="pd-chip">Deal Risk Spotter</span>
+        <span class="pd-chip">CAC Tracker</span>
+        <span class="pd-chip">Team Pulse</span>
+      </div>
+      <div class="pd-quote">"I used to walk into board meetings hoping the numbers were right. Now I know before I sit down."</div>
+    </div>
+    <div class="pd-right">
+      <h4>Live dashboard · Telegram staff</h4>
+      <div class="pd-widgets">
+        <div class="pdw"><span class="pdw-label">Pipeline this quarter</span><span class="pdw-val green">$840K</span></div>
+        <div class="pdw"><span class="pdw-label">Deals at risk</span><span class="pdw-val amber">3 flagged</span></div>
+        <div class="pdw"><span class="pdw-label">Win rate MTD</span><span class="pdw-val green">34%</span></div>
+        <div class="pdw"><span class="pdw-label">CAC this month</span><span class="pdw-val gold">$312</span></div>
+      </div>
+      <div class="pd-chat">
+        <div class="pdc-header"><div class="pdc-gem">B</div><div><div class="pdc-name">Bespoke Staff</div><div class="pdc-status">● Active</div></div></div>
+        <div class="msg b"><div class="mi">Morning Alex 👋 3 deals stalled 14+ days — Acme ($80K), TechCorp ($45K), DataFlow ($30K). Talking points drafted for each. Flag to reps?</div></div>
+        <div class="msg u"><div class="mi">Yes. And prep board summary</div></div>
+        <div class="msg b"><div class="mi">Done. Win rate up 4% this week — the new deck is working. Board summary ready in your dashboard.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PM -->
+  <div class="pdepth-panel" id="pd-pm">
+    <div class="pd-left">
+      <div class="pd-roman">IV.</div>
+      <h3>Product Manager · Engineer · QA</h3>
+      <div class="pd-role">Tech & Product Teams</div>
+      <p>You live across Jira, Notion, Slack, and PRs simultaneously. Context-switching is your tax. Bespoke knows your sprint, your blockers, your team — and brings it all to one place.</p>
+      <div class="pd-chips">
+        <span class="pd-chip">Sprint Tracker</span>
+        <span class="pd-chip">Blocker Spotter</span>
+        <span class="pd-chip">Roadmap Health</span>
+        <span class="pd-chip">Release Monitor</span>
+      </div>
+      <div class="pd-quote">"Standup prep used to take 20 minutes. Now I ask Bespoke and I'm done in 30 seconds."</div>
+    </div>
+    <div class="pd-right">
+      <h4>Live dashboard · Telegram staff</h4>
+      <div class="pd-widgets">
+        <div class="pdw"><span class="pdw-label">Sprint velocity</span><span class="pdw-val green">42 pts ↑</span></div>
+        <div class="pdw"><span class="pdw-label">Blockers open</span><span class="pdw-val amber">4 (2 unassigned)</span></div>
+        <div class="pdw"><span class="pdw-label">Q2 milestone</span><span class="pdw-val gold">3 weeks out</span></div>
+        <div class="pdw"><span class="pdw-label">Bug backlog</span><span class="pdw-val amber">12 open</span></div>
+      </div>
+      <div class="pd-chat">
+        <div class="pdc-header"><div class="pdc-gem">B</div><div><div class="pdc-name">Bespoke Staff</div><div class="pdc-status">● Active</div></div></div>
+        <div class="msg b"><div class="mi">Morning Priya 👋 Sprint 14 on track. 2 blockers unassigned since yesterday — auth ticket and iOS crash. Ping the engineers?</div></div>
+        <div class="msg u"><div class="mi">Yes. Also prep standup notes</div></div>
+        <div class="msg b"><div class="mi">Done. Standup doc ready in your dashboard. Release candidate clean — QA flagged 1 low-priority issue.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHURCH -->
+  <div class="pdepth-panel" id="pd-church">
+    <div class="pd-left">
+      <div class="pd-roman">V.</div>
+      <h3>Church · Community Manager</h3>
+      <div class="pd-role">Faith & Community</div>
+      <p>You shepherd a community. But attendance tracking, tithes, volunteer coordination, and member follow-ups can consume the best of your energy. Your calling deserves a staff as devoted as you are.</p>
+      <div class="pd-chips">
+        <span class="pd-chip">Attendance Tracker</span>
+        <span class="pd-chip">Tithe Monitor</span>
+        <span class="pd-chip">Volunteer Coord.</span>
+        <span class="pd-chip">Member Comms</span>
+      </div>
+      <div class="pd-quote">"I finally feel like a pastor again, not an administrator. My staff handles the details so I can handle the people."</div>
+    </div>
+    <div class="pd-right">
+      <h4>Live dashboard · WhatsApp staff</h4>
+      <div class="pd-widgets">
+        <div class="pdw"><span class="pdw-label">Sunday attendance</span><span class="pdw-val green">312 ↑ 8%</span></div>
+        <div class="pdw"><span class="pdw-label">Tithes this month</span><span class="pdw-val green">$18,240</span></div>
+        <div class="pdw"><span class="pdw-label">Follow-ups pending</span><span class="pdw-val amber">3 members</span></div>
+        <div class="pdw"><span class="pdw-label">Volunteers confirmed</span><span class="pdw-val gold">14 / 16</span></div>
+      </div>
+      <div class="pd-chat">
+        <div class="pdc-header"><div class="pdc-gem">B</div><div><div class="pdc-name">Bespoke Staff</div><div class="pdc-status">● Active</div></div></div>
+        <div class="msg b"><div class="mi">Morning Pastor James 👋 312 attended Sunday — strong week. Marcus Reed has missed 3 weeks. Warm message drafted for your review.</div></div>
+        <div class="msg u"><div class="mi">Send it. Who's unconfirmed for volunteers?</div></div>
+        <div class="msg b"><div class="mi">Sent ✓ Thomas and Grace unconfirmed. Grace just confirmed. Reminder sent to Thomas.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ornament"><div class="orn-line"></div><div class="orn-gem"></div><div class="orn-line r"></div></div>
+
+<!-- DATA -->
+<section class="sec" id="data">
+  <div class="rv">
+    <div class="sec-label">The data experience</div>
+    <h2 class="sec-title">Your app builds itself<br/><em>from conversation.</em></h2>
+    <p class="sec-sub">No database setup. No schema design. You talk — Bespoke structures, stores, and surfaces your data exactly as you need it.</p>
+  </div>
+  <div class="data-grid rv rv-d1">
+    <div class="data-diagram">
+      <div class="dd-label">// How your data layer is built</div>
+      <div class="df-multi">
+        <div class="df-node gold"><div class="df-node-lbl">You say</div><div class="df-node-val">"Track invoices by client"</div></div>
+        <div class="df-node gold"><div class="df-node-lbl">You say</div><div class="df-node-val">"Who missed Sunday?"</div></div>
+        <div class="df-node gold"><div class="df-node-lbl">You say</div><div class="df-node-val">"Show sprint velocity"</div></div>
+      </div>
+      <div class="df-arrow">↓ &nbsp; AI infers structure · builds your schema</div>
+      <div class="df-node cyan" style="margin-bottom:8px"><div class="df-node-lbl">Your dedicated data store</div><div class="df-node-val">Isolated. Private. Only yours.</div></div>
+      <div class="df-arrow">↓ &nbsp; Rendered as your unique dashboard</div>
+      <div class="df-multi">
+        <div class="df-node green"><div class="df-node-lbl">Widget</div><div class="df-node-val">Invoice tracker</div></div>
+        <div class="df-node green"><div class="df-node-lbl">Widget</div><div class="df-node-val">Attendance chart</div></div>
+        <div class="df-node green"><div class="df-node-lbl">Widget</div><div class="df-node-val">Sprint velocity</div></div>
+      </div>
+    </div>
+    <div class="data-points">
+      <div class="dp"><div class="dp-line"></div><div><h4>Start from scratch or connect what you have</h4><p>No import required. Just begin talking. Connect QuickBooks, Notion, or Google Sheets optionally. Your product works on day one either way.</p></div></div>
+      <div class="dp"><div class="dp-line"></div><div><h4>Schema emerges from how you work</h4><p>A church manager and a band manager both have "contacts" — but what they track is entirely different. Bespoke learns your definition, not a template.</p></div></div>
+      <div class="dp"><div class="dp-line"></div><div><h4>Every question becomes a permanent view</h4><p>Ask "what's my revenue this week" on Monday and it becomes your Monday widget. Your dashboard is built from the questions that matter to you.</p></div></div>
+      <div class="dp"><div class="dp-line"></div><div><h4>Dedicated instance — truly yours</h4><p>Post-trial, your data lives in an instance provisioned exclusively for you. Not shared, not pooled. The infrastructure is as bespoke as the product.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="ornament"><div class="orn-line"></div><div class="orn-gem"></div><div class="orn-line r"></div></div>
+
+<!-- PRICING -->
+<section class="sec" id="pricing" style="text-align:center">
+  <div class="rv">
+    <div class="sec-label" style="justify-content:center">Pricing</div>
+    <h2 class="sec-title">Start free.<br/><em>Stay because it fits.</em></h2>
+    <p class="sec-sub" style="margin:0 auto">14 days to feel what software built around you actually feels like.</p>
+  </div>
+  <div class="pricing-wrap rv rv-d1">
+    <div class="pc">
+      <div class="pc-tier">Trial</div>
+      <div class="pc-price">Free<span class="mo"> / 14 days</span></div>
+      <p class="pc-desc">Full experience. No credit card. Feel what bespoke means.</p>
+      <div class="pc-rule"></div>
+      <ul class="pc-feats">
+        <li>1 messaging channel</li>
+        <li>Full AI staff suite</li>
+        <li>Personal dashboard builder</li>
+        <li>100 messages / day</li>
+        <li>Fresh data or connect tools</li>
+      </ul>
+      <button class="pc-btn">Begin trial</button>
+    </div>
+    <div class="pc hot">
+      <div class="pc-tier">Solo</div>
+      <div class="pc-price"><sup>$</sup>39<span class="mo">/mo</span></div>
+      <p class="pc-desc">Your complete personal operating system. Dedicated. Isolated. Yours.</p>
+      <div class="pc-rule"></div>
+      <ul class="pc-feats">
+        <li>2 messaging channels</li>
+        <li>Unlimited messages</li>
+        <li>Unlimited dashboard widgets</li>
+        <li>Dedicated instance</li>
+        <li>Optional integrations</li>
+        <li>Priority support</li>
+      </ul>
+      <button class="pc-btn hot">Get Bespoke →</button>
+    </div>
+    <div class="pc">
+      <div class="pc-tier">Team</div>
+      <div class="pc-price"><sup>$</sup>99<span class="mo">/mo</span></div>
+      <p class="pc-desc">Shared workspace. Individual apps. Everyone aligned — nobody on the same dashboard.</p>
+      <div class="pc-rule"></div>
+      <ul class="pc-feats">
+        <li>Up to 5 users</li>
+        <li>All channels</li>
+        <li>Shared + private workspaces</li>
+        <li>Team AI staff</li>
+        <li>Admin controls</li>
+        <li>Custom integrations</li>
+      </ul>
+      <button class="pc-btn">Talk to us</button>
+    </div>
+  </div>
+</section>
+
+<div class="ornament"><div class="orn-line"></div><div class="orn-gem"></div><div class="orn-line r"></div></div>
+
+<!-- CTA -->
+<div class="cta-wrap">
+  <div class="cta-inner rv">
+    <div class="cta-glow"></div>
+    <h2>Your work.<br/><em>Finally yours.</em></h2>
+    <p>Join professionals who've stopped fitting their work into software<br/>and started having software fit around their work.</p>
+    <div class="email-row">
+      <input class="email-inp" type="email" placeholder="your@email.com"/>
+      <button class="email-btn">Request access →</button>
+    </div>
+    <p class="cta-note">Free 14-day trial · No credit card · Cancel anytime</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo"><div class="foot-gem"></div>Bespoke</div>
+  <ul class="foot-links">
+    <li><a href="#">Privacy</a></li>
+    <li><a href="#">Terms</a></li>
+    <li><a href="#">Docs</a></li>
+    <li><a href="#">Blog</a></li>
+    <li><a href="#">Twitter</a></li>
+  </ul>
+  <p class="foot-copy">© 2026 Bespoke · Built around how you work.</p>
+</footer>
+
+<script>
+// Cursor
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*.11;ry+=(my-ry)*.11;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
+
+// Nav
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>50));
+
+// Hero switcher
+document.querySelectorAll('.sw-tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.sw-tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.sw-panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('sp-'+t.dataset.p).classList.add('active');
+  });
+});
+
+// Profession tabs
+document.querySelectorAll('.pdepth-tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.pdepth-tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.pdepth-panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.panel).classList.add('active');
+  });
+});
+
+// Reveal
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.1});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
