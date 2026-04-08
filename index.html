@@ -4,758 +4,1008 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Bespoke — Built around how you work.</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Geist+Mono:wght@300;400;500&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Geist+Mono:wght@300;400;500&family=Instrument+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --black:#07080A;
-  --black2:#0B0C0F;
-  --black3:#101215;
-  --black4:#161820;
-  --black5:#1C1F28;
+  --ink:#06080B;
+  --ink2:#0C0F16;
+  --ink3:#12161F;
+  --ink4:#181D28;
+  --ink5:#1F2535;
   --gold:#C9A84C;
   --gold2:#E2C06A;
   --gold3:#F0D48A;
-  --gold4:#F8E9C0;
-  --gold-dim:rgba(201,168,76,0.08);
-  --gold-dim2:rgba(201,168,76,0.14);
-  --gold-border:rgba(201,168,76,0.22);
-  --gold-border2:rgba(201,168,76,0.35);
-  --gold-glow:rgba(201,168,76,0.18);
-  --white:#F4F1EC;
-  --white2:#C8C4BC;
-  --white3:#7A7670;
-  --white4:#3A3830;
-  --border:rgba(255,255,255,0.05);
-  --border2:rgba(255,255,255,0.09);
+  --gold4:#F8EDD0;
+  --gd:rgba(201,168,76,.1);
+  --gb:rgba(201,168,76,.22);
+  --gg:rgba(201,168,76,.18);
+  --cream:#F0EBE0;
+  --cream2:#C8C2B6;
+  --cream3:#8A8278;
+  --cream4:#48443C;
+  --b:rgba(255,255,255,.055);
+  --b2:rgba(255,255,255,.10);
+  --g:#22C55E;
+  --g2:rgba(34,197,94,.12);
+  --am:#F59E0B;
+  --r:#EF4444;
   --display:'Cormorant Garamond',serif;
   --mono:'Geist Mono',monospace;
-  --body:'Geist',sans-serif;
+  --body:'Instrument Sans',sans-serif;
 }
 html{scroll-behavior:smooth}
-body{background:var(--black);color:var(--white);font-family:var(--body);overflow-x:hidden;cursor:none}
+body{background:var(--ink);color:var(--cream);font-family:var(--body);overflow-x:hidden;cursor:none}
 
 /* ── CURSOR ── */
-#cur{position:fixed;width:5px;height:5px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s}
-#cur-ring{position:fixed;width:32px;height:32px;border:1px solid var(--gold-border);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .2s,height .2s,border-color .2s}
+#cur{position:fixed;width:5px;height:5px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .18s,height .18s}
+#curR{position:fixed;width:30px;height:30px;border:1px solid var(--gb);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .2s,height .2s,border-color .2s}
 
-/* ── TEXTURE ── */
-.grain{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-
-/* fine diagonal lines */
-.lines{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.025;
-  background-image:repeating-linear-gradient(45deg,var(--gold) 0,var(--gold) .5px,transparent 0,transparent 50%);
-  background-size:24px 24px}
+/* ── GRAIN + LINES ── */
+.grain{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.038;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.diag{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.018;background:repeating-linear-gradient(45deg,var(--gold) 0,var(--gold) .4px,transparent 0,transparent 50%);background-size:20px 20px}
 
 /* ── NAV ── */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:24px 56px;display:flex;align-items:center;justify-content:space-between;transition:all .4s}
-nav.scrolled{background:rgba(7,8,10,.92);border-bottom:1px solid var(--border);backdrop-filter:blur(28px)}
-.logo{font-family:var(--display);font-weight:600;font-size:22px;letter-spacing:3px;text-transform:uppercase;text-decoration:none;color:var(--white);display:flex;align-items:center;gap:14px}
-.logo-gem{width:8px;height:8px;background:var(--gold);transform:rotate(45deg);flex-shrink:0;box-shadow:0 0 12px var(--gold-glow)}
-.nav-links{display:flex;gap:36px;list-style:none}
-.nav-links a{color:var(--white3);text-decoration:none;font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;transition:color .2s}
-.nav-links a:hover{color:var(--gold2)}
-.nav-right{display:flex;align-items:center;gap:14px}
-.btn-nav-ghost{background:transparent;border:1px solid var(--border2);color:var(--white3);padding:10px 20px;border-radius:2px;font-family:var(--mono);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;cursor:none;transition:all .2s}
-.btn-nav-ghost:hover{border-color:var(--gold-border);color:var(--gold2)}
-.btn-nav-gold{background:var(--gold);color:var(--black);border:none;padding:11px 22px;border-radius:2px;font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:none;transition:all .25s;font-weight:500}
-.btn-nav-gold:hover{background:var(--gold2);box-shadow:0 8px 32px var(--gold-glow);transform:translateY(-1px)}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:22px 52px;display:flex;align-items:center;justify-content:space-between;transition:all .4s}
+nav.sc{background:rgba(6,8,11,.9);border-bottom:1px solid var(--b);backdrop-filter:blur(28px)}
+.logo{font-family:var(--display);font-weight:500;font-size:20px;letter-spacing:2.5px;text-transform:uppercase;text-decoration:none;color:var(--cream);display:flex;align-items:center;gap:10px}
+.gem{width:7px;height:7px;background:var(--gold);transform:rotate(45deg);flex-shrink:0;box-shadow:0 0 10px var(--gg)}
+.nlinks{display:flex;gap:32px;list-style:none}
+.nlinks a{color:var(--cream3);text-decoration:none;font-family:var(--mono);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;transition:color .2s}
+.nlinks a:hover{color:var(--gold2)}
+.nright{display:flex;gap:12px;align-items:center}
+.bgh{background:transparent;border:1px solid var(--b2);color:var(--cream3);padding:9px 18px;border-radius:2px;font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;cursor:none;transition:all .2s}
+.bgh:hover{border-color:var(--gb);color:var(--gold2)}
+.bgold{background:var(--gold);color:var(--ink);border:none;padding:10px 20px;border-radius:2px;font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:none;transition:all .2s;font-weight:500}
+.bgold:hover{background:var(--gold2);box-shadow:0 6px 24px var(--gg);transform:translateY(-1px)}
 
 /* ── HERO ── */
-.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:140px 56px 100px;text-align:center;z-index:2;overflow:hidden}
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:130px 52px 80px;text-align:center;z-index:2;overflow:hidden}
+.hglow{position:absolute;width:900px;height:700px;background:radial-gradient(ellipse,rgba(201,168,76,.09) 0%,rgba(201,168,76,.03) 40%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-58%);pointer-events:none;animation:gp 8s ease-in-out infinite}
+@keyframes gp{0%,100%{opacity:1;transform:translate(-50%,-58%) scale(1)}50%{opacity:.6;transform:translate(-50%,-58%) scale(1.1)}}
+.hrule{width:1px;height:56px;background:linear-gradient(180deg,transparent,var(--gold),transparent);margin:0 auto 36px;animation:rise .8s ease forwards;opacity:0}
+.hey{font-family:var(--mono);font-size:10.5px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:28px;animation:rise .8s ease .1s forwards;opacity:0;display:flex;align-items:center;gap:10px;justify-content:center}
+.hdot{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:blink 2s ease infinite;box-shadow:0 0 8px var(--gold)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-family:var(--display);font-weight:300;font-size:clamp(60px,9.5vw,118px);line-height:.92;letter-spacing:-1px;margin-bottom:14px;animation:rise .9s ease .2s forwards;opacity:0}
+.hero h1 em{display:block;font-style:italic;color:var(--gold)}
+.hero h1 em::after{content:'';display:block;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin-top:6px;opacity:.5}
+.htag{font-family:var(--mono);font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--cream3);margin-bottom:52px;animation:rise .9s ease .3s forwards;opacity:0}
+.hctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:rise .9s ease .4s forwards;opacity:0;margin-bottom:72px}
+.bpri{background:var(--gold);color:var(--ink);border:none;padding:18px 40px;border-radius:2px;font-family:var(--mono);font-size:11.5px;letter-spacing:2px;text-transform:uppercase;cursor:none;transition:all .25s;font-weight:500}
+.bpri:hover{background:var(--gold2);box-shadow:0 16px 48px var(--gg);transform:translateY(-2px)}
+.bsec{background:transparent;color:var(--cream3);border:1px solid var(--b2);padding:18px 40px;border-radius:2px;font-family:var(--mono);font-size:11.5px;letter-spacing:2px;text-transform:uppercase;cursor:none;transition:all .25s}
+.bsec:hover{border-color:var(--gb);color:var(--gold2);transform:translateY(-2px)}
 
-.hero-glow{position:absolute;width:800px;height:600px;background:radial-gradient(ellipse,rgba(201,168,76,.09) 0%,rgba(201,168,76,.03) 40%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-55%);pointer-events:none;animation:glow-pulse 7s ease-in-out infinite}
-@keyframes glow-pulse{0%,100%{opacity:1;transform:translate(-50%,-55%) scale(1)}50%{opacity:.6;transform:translate(-50%,-55%) scale(1.12)}}
+/* ── PROF SWITCHER (HERO) ── */
+.psw{width:100%;max-width:880px;animation:rise .9s ease .5s forwards;opacity:0}
+.pswl{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--cream4);margin-bottom:14px}
+.pswtabs{display:flex;gap:0;border:1px solid var(--b);overflow:hidden;border-radius:2px;margin-bottom:1px;flex-wrap:wrap}
+.pstab{flex:1;min-width:120px;background:var(--ink2);border:none;color:var(--cream3);padding:11px 8px;font-family:var(--mono);font-size:10px;letter-spacing:.8px;text-transform:uppercase;cursor:none;transition:all .2s;border-right:1px solid var(--b)}
+.pstab:last-child{border-right:none}
+.pstab:hover,.pstab.on{background:var(--gd);color:var(--gold2)}
+.psprev{background:var(--ink2);border:1px solid var(--b);padding:24px 28px;position:relative;overflow:hidden;min-height:130px}
+.psprev::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.5}
+.psp{display:none}
+.psp.on{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;animation:fi .4s ease}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.psw-widget{border:1px solid var(--b);padding:14px;position:relative;overflow:hidden}
+.psw-widget::before{content:'';position:absolute;top:0;left:0;width:2px;height:100%;background:var(--gold);opacity:.4}
+.swl{font-family:var(--mono);font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--cream4);margin-bottom:6px}
+.swv{font-family:var(--display);font-size:26px;font-weight:500;color:var(--cream)}
+.swv .g{color:var(--gold2)}.swv .gr{color:#22C55E}.swv .am{color:#F59E0B}
+.sws{font-family:var(--mono);font-size:9.5px;color:var(--cream3);margin-top:3px}
+.swbar{height:2px;background:var(--b);margin-top:10px}
+.swbf{height:100%;background:var(--gold);transition:width 1s ease}
+.swbadge{display:inline-flex;align-items:center;gap:4px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:#22C55E;padding:2px 7px;font-family:var(--mono);font-size:9px;letter-spacing:.8px;text-transform:uppercase;margin-top:6px}
 
-.hero-rule{width:1px;height:60px;background:linear-gradient(180deg,transparent,var(--gold),transparent);margin:0 auto 40px;animation:rise .8s ease forwards;opacity:0}
-
-.hero-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:32px;animation:rise .8s ease .1s forwards;opacity:0}
-
-.hero h1{font-family:var(--display);font-weight:300;font-size:clamp(68px,10vw,130px);line-height:.92;letter-spacing:-1px;margin-bottom:16px;animation:rise .9s ease .2s forwards;opacity:0}
-.hero h1 em{font-style:italic;color:var(--gold);display:block}
-.hero h1 em::after{content:'';display:block;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin-top:8px;opacity:.5}
-
-.hero-tagline{font-family:var(--mono);font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--white3);margin-bottom:56px;animation:rise .9s ease .3s forwards;opacity:0}
-
-.hero-ctas{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;animation:rise .9s ease .4s forwards;opacity:0;margin-bottom:80px}
-.btn-gold-lg{background:var(--gold);color:var(--black);border:none;padding:18px 40px;border-radius:2px;font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:none;transition:all .25s;font-weight:500}
-.btn-gold-lg:hover{background:var(--gold2);box-shadow:0 16px 48px var(--gold-glow);transform:translateY(-2px)}
-.btn-ghost-lg{background:transparent;color:var(--white3);border:1px solid var(--border2);padding:18px 40px;border-radius:2px;font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:none;transition:all .25s}
-.btn-ghost-lg:hover{border-color:var(--gold-border);color:var(--gold2);transform:translateY(-2px)}
-
-/* PROFESSION SWITCHER */
-.prof-switcher{width:100%;max-width:900px;animation:rise .9s ease .5s forwards;opacity:0}
-.sw-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--white4);margin-bottom:16px}
-.sw-tabs{display:flex;gap:0;border:1px solid var(--border);border-radius:2px;overflow:hidden;margin-bottom:1px}
-.sw-tab{flex:1;background:var(--black2);border:none;color:var(--white3);padding:12px 8px;font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;cursor:none;transition:all .2s;border-right:1px solid var(--border)}
-.sw-tab:last-child{border-right:none}
-.sw-tab:hover,.sw-tab.active{background:var(--gold-dim);color:var(--gold2)}
-.sw-preview{background:var(--black2);border:1px solid var(--border);padding:28px 32px;position:relative;overflow:hidden;min-height:140px}
-.sw-preview::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.6}
-.sw-panel{display:none}
-.sw-panel.active{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;animation:fadein .4s ease}
-@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.sw-widget{border:1px solid var(--border);padding:16px;position:relative;overflow:hidden}
-.sw-widget::before{content:'';position:absolute;top:0;left:0;width:2px;height:100%;background:var(--gold);opacity:.4}
-.sww-label{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--white4);margin-bottom:8px}
-.sww-val{font-family:var(--display);font-size:28px;font-weight:500;letter-spacing:-.5px;color:var(--white)}
-.sww-val .g{color:var(--gold2)}
-.sww-val .gr{color:#6FCF97}
-.sww-val .am{color:#F2994A}
-.sww-sub{font-size:12px;color:var(--white3);margin-top:4px;font-family:var(--mono);font-size:10px}
-.sww-bar{height:2px;background:var(--border);margin-top:12px}
-.sww-bar-fill{height:100%;background:var(--gold);transition:width 1s ease}
-.sw-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(111,207,151,.08);border:1px solid rgba(111,207,151,.2);color:#6FCF97;padding:3px 8px;font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;margin-top:8px}
-
-@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-
-.scroll-line{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;animation:rise 1s ease 1.4s forwards;opacity:0}
-.sl-bar{width:1px;height:48px;background:linear-gradient(180deg,var(--gold),transparent);animation:sl 2.5s ease infinite}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.scl{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;animation:rise 1s ease 1.4s forwards;opacity:0}
+.sclb{width:1px;height:48px;background:linear-gradient(180deg,var(--gold),transparent);animation:sl 2.4s ease infinite}
 @keyframes sl{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 
-/* ── DIVIDERS ── */
-hr.div{border:none;border-top:1px solid var(--border);position:relative;z-index:2}
-.ornament{display:flex;align-items:center;justify-content:center;gap:16px;padding:20px 0;position:relative;z-index:2}
-.orn-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--border))}
-.orn-line.r{background:linear-gradient(270deg,transparent,var(--border))}
-.orn-gem{width:6px;height:6px;background:var(--gold);transform:rotate(45deg);opacity:.6}
-
 /* ── MARQUEE ── */
-.mq{border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--black2);padding:12px 0;overflow:hidden;position:relative;z-index:2}
-.mq-track{display:flex;animation:mq 35s linear infinite;width:max-content}
-.mq-item{display:flex;align-items:center;gap:10px;padding:0 32px;font-family:var(--mono);font-size:10px;color:var(--white4);white-space:nowrap;letter-spacing:2px;text-transform:uppercase}
-.mq-gem{color:var(--gold);font-size:8px}
+.mq{border-top:1px solid var(--b);border-bottom:1px solid var(--b);background:var(--ink2);padding:11px 0;overflow:hidden;position:relative;z-index:2}
+.mqt{display:flex;animation:mq 32s linear infinite;width:max-content}
+.mqi{display:flex;align-items:center;gap:9px;padding:0 26px;font-family:var(--mono);font-size:10px;color:var(--cream4);white-space:nowrap;letter-spacing:1.5px;text-transform:uppercase}
+.mqg{color:var(--gold);font-size:12px}
 @keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
 /* ── SECTIONS ── */
-.sec{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:100px 56px}
-.sec-label{font-family:var(--mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:12px}
-.sec-label::before{content:'';width:24px;height:1px;background:var(--gold);display:block;opacity:.6}
-.sec-title{font-family:var(--display);font-size:clamp(44px,6vw,76px);font-weight:300;letter-spacing:-1px;line-height:1.0;margin-bottom:20px}
-.sec-title em{font-style:italic;color:var(--gold2)}
-.sec-sub{font-size:16px;color:var(--white3);line-height:1.8;max-width:480px;font-weight:300}
+.sec{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:96px 52px}
+.slbl{font-family:var(--mono);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.slbl::before{content:'';width:18px;height:1px;background:var(--gold);display:block;opacity:.6}
+.stitle{font-family:var(--display);font-size:clamp(40px,5.5vw,68px);font-weight:300;letter-spacing:-.5px;line-height:1.02;margin-bottom:18px}
+.stitle em{font-style:italic;color:var(--gold2)}
+.ssub{font-size:16px;color:var(--cream3);line-height:1.8;max-width:460px;font-weight:300}
+hr.div{border:none;border-top:1px solid var(--b);position:relative;z-index:2}
+.orn{display:flex;align-items:center;justify-content:center;gap:14px;padding:18px 0;position:relative;z-index:2}
+.ornl{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--b))}
+.ornl.r{background:linear-gradient(270deg,transparent,var(--b))}
+.orng{width:5px;height:5px;background:var(--gold);transform:rotate(45deg);opacity:.55}
 
 /* ── PHILOSOPHY ── */
-.phil-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);margin-top:64px;border:1px solid var(--border)}
-.phil-card{background:var(--black2);padding:48px;position:relative;overflow:hidden;transition:background .3s}
-.phil-card:hover{background:var(--black3)}
-.phil-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .4s}
-.phil-card:hover::after{opacity:.5}
-.phil-num{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:24px;opacity:.7}
-.phil-card h3{font-family:var(--display);font-size:26px;font-weight:400;letter-spacing:-.3px;margin-bottom:12px;line-height:1.2}
-.phil-card h3 em{font-style:italic;color:var(--gold2)}
-.phil-card p{font-size:14px;color:var(--white3);line-height:1.75;font-weight:300}
+.phgrid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--b);margin-top:56px;border:1px solid var(--b)}
+.phcard{background:var(--ink2);padding:44px;position:relative;overflow:hidden;transition:background .3s}
+.phcard:hover{background:var(--ink3)}
+.phcard::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .4s}
+.phcard:hover::after{opacity:.5}
+.phnum{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:20px;opacity:.7}
+.phcard h3{font-family:var(--display);font-size:24px;font-weight:400;letter-spacing:-.3px;margin-bottom:10px;line-height:1.2}
+.phcard h3 em{font-style:italic;color:var(--gold2)}
+.phcard p{font-size:14px;color:var(--cream3);line-height:1.78;font-weight:300}
 
-/* ── PROFESSIONS ── */
-.pdepth-tabs{display:flex;gap:0;border:1px solid var(--border);overflow:hidden;margin-top:56px}
-.pdepth-tab{flex:1;background:var(--black2);border:none;color:var(--white3);padding:16px 8px;font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;cursor:none;transition:all .2s;border-right:1px solid var(--border)}
-.pdepth-tab:last-child{border-right:none}
-.pdepth-tab:hover,.pdepth-tab.active{background:var(--gold-dim2);color:var(--gold2)}
-.pdepth-panel{display:none;margin-top:1px;border:1px solid var(--border)}
-.pdepth-panel.active{display:grid;grid-template-columns:1fr 1fr;animation:fadein .4s ease}
-.pd-left{background:var(--black2);padding:52px;border-right:1px solid var(--border)}
-.pd-right{background:var(--black3);padding:52px}
-.pd-roman{font-family:var(--display);font-size:13px;font-weight:400;color:var(--gold);letter-spacing:2px;margin-bottom:20px;font-style:italic}
-.pd-left h3{font-family:var(--display);font-size:32px;font-weight:400;letter-spacing:-.5px;margin-bottom:6px;line-height:1.1}
-.pd-role{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--white4);margin-bottom:24px}
-.pd-left p{font-size:15px;color:var(--white3);line-height:1.75;margin-bottom:28px;font-weight:300}
-.pd-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:32px}
-.pd-chip{background:var(--gold-dim);border:1px solid var(--gold-border);color:var(--gold3);padding:5px 14px;font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase}
-.pd-quote{border-left:1px solid var(--gold);padding:16px 20px;font-family:var(--display);font-size:17px;font-style:italic;color:var(--white3);line-height:1.6;opacity:.8}
-.pd-right h4{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--white4);margin-bottom:24px}
-.pd-widgets{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
-.pdw{background:var(--black2);border:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;transition:border-color .2s}
-.pdw:hover{border-color:var(--gold-border)}
-.pdw-label{font-size:13px;color:var(--white3);font-weight:300}
-.pdw-val{font-family:var(--display);font-size:20px;font-weight:500}
-.pdw-val.gold{color:var(--gold2)}
-.pdw-val.green{color:#6FCF97}
-.pdw-val.amber{color:#F2994A}
-.pd-chat{background:var(--black2);border:1px solid var(--border);padding:20px}
-.pdc-header{display:flex;align-items:center;gap:10px;padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:14px}
-.pdc-gem{width:28px;height:28px;background:var(--gold);display:grid;place-items:center;font-size:12px;color:var(--black);font-weight:600;font-family:var(--mono);flex-shrink:0}
-.pdc-name{font-family:var(--display);font-size:14px;font-weight:500}
-.pdc-status{font-family:var(--mono);font-size:9px;color:#6FCF97;letter-spacing:1px;text-transform:uppercase}
-.msg{margin-bottom:10px}
-.msg.u{text-align:right}
-.mi{display:inline-block;padding:10px 14px;font-size:12.5px;line-height:1.5;max-width:88%;text-align:left}
-.msg.b .mi{background:var(--black3);border:1px solid var(--border);color:var(--white2)}
-.msg.u .mi{background:var(--gold);color:var(--black);font-weight:500}
+/* ══════════════════════════════════════════════════════════
+   INTERACTIVE PROTOTYPE
+══════════════════════════════════════════════════════════ */
+.proto-section{position:relative;z-index:2;padding:100px 0;background:var(--ink2);border-top:1px solid var(--b);border-bottom:1px solid var(--b)}
+.proto-inner{max-width:1200px;margin:0 auto;padding:0 52px}
+.proto-header{text-align:center;margin-bottom:56px}
+.proto-badge{display:inline-flex;align-items:center;gap:8px;background:var(--gd);border:1px solid var(--gb);color:var(--gold2);padding:6px 14px;border-radius:100px;font-family:var(--mono);font-size:10.5px;letter-spacing:.8px;margin-bottom:24px}
 
-/* ── DATA SECTION ── */
-.data-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;margin-top:64px}
-.data-diagram{background:var(--black2);border:1px solid var(--border);padding:36px;position:relative}
-.data-diagram::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.6}
-.dd-label{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:24px;opacity:.7}
-.df-multi{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
-.df-node{border:1px solid var(--border);padding:12px 14px;background:var(--black3)}
-.df-node.gold{border-color:var(--gold-border);background:var(--gold-dim)}
-.df-node.cyan{border-color:rgba(100,200,255,.2);background:rgba(100,200,255,.04)}
-.df-node.green{border-color:rgba(111,207,151,.2);background:rgba(111,207,151,.04)}
-.df-node-lbl{font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--white4);margin-bottom:5px}
-.df-node-val{font-size:12px;color:var(--white2)}
-.df-node.gold .df-node-val{color:var(--gold3)}
-.df-node.green .df-node-val{color:#6FCF97}
-.df-arrow{text-align:center;font-family:var(--mono);font-size:11px;color:var(--white4);padding:10px 0;letter-spacing:1px}
-.data-points{display:flex;flex-direction:column;gap:28px}
-.dp{display:flex;gap:20px;align-items:flex-start}
-.dp-line{width:1px;height:100%;background:var(--border);flex-shrink:0;margin-top:4px;width:1px;min-height:60px;background:linear-gradient(180deg,var(--gold),transparent);opacity:.4}
-.dp h4{font-family:var(--display);font-size:19px;font-weight:400;letter-spacing:-.2px;margin-bottom:6px}
-.dp p{font-size:14px;color:var(--white3);line-height:1.7;font-weight:300}
+/* HOUSE SHELL */
+.house{display:grid;grid-template-columns:220px 1fr;grid-template-rows:48px 1fr;height:640px;border:1px solid var(--b2);border-radius:12px;overflow:hidden;background:var(--ink3);box-shadow:0 32px 80px rgba(0,0,0,.6),0 0 0 1px rgba(201,168,76,.08)}
+.house-topbar{grid-column:1/-1;background:var(--ink);border-bottom:1px solid var(--b);display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+.htb-logo{font-family:var(--display);font-weight:500;font-size:14px;letter-spacing:2px;text-transform:uppercase;display:flex;align-items:center;gap:7px}
+.htb-gem{width:5px;height:5px;background:var(--gold);transform:rotate(45deg);box-shadow:0 0 6px var(--gg)}
+.htb-right{display:flex;align-items:center;gap:10px}
+.htb-dot{width:8px;height:8px;background:#22C55E;border-radius:50%;box-shadow:0 0 6px rgba(34,197,94,.4)}
+.htb-name{font-family:var(--mono);font-size:10px;color:var(--cream3);letter-spacing:.5px}
+.htb-dots{display:flex;gap:5px}
+.htb-d{width:10px;height:10px;border-radius:50%}
+
+/* SIDEBAR */
+.house-sidebar{background:var(--ink);border-right:1px solid var(--b);display:flex;flex-direction:column;overflow:hidden}
+.sb-section{padding:10px 8px 4px;font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--cream4)}
+.sb-item{display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:6px;margin:1px 4px;cursor:pointer;transition:all .2s;font-size:13px;font-family:var(--body);color:var(--cream3);font-weight:400;position:relative}
+.sb-item:hover{background:var(--ink3);color:var(--cream)}
+.sb-item.active{background:var(--gd);color:var(--gold2)}
+.sb-item.active::before{content:'';position:absolute;left:-4px;top:50%;transform:translateY(-50%);width:2px;height:60%;background:var(--gold);border-radius:1px}
+.sb-icon{font-size:15px;flex-shrink:0;width:18px;text-align:center}
+.sb-new{display:inline-block;background:var(--gold);color:var(--ink);font-family:var(--mono);font-size:8px;padding:1px 5px;border-radius:2px;margin-left:auto;font-weight:600;letter-spacing:.5px;animation:newpulse 2s ease infinite}
+@keyframes newpulse{0%,100%{opacity:1}50%{opacity:.6}}
+.sb-building{display:flex;align-items:center;gap:6px;padding:8px 12px;margin:1px 4px;font-size:12px;font-family:var(--mono);color:var(--cream4);letter-spacing:.3px}
+.sb-building .dots span{animation:dots 1.4s ease infinite}
+.sb-building .dots span:nth-child(2){animation-delay:.2s}
+.sb-building .dots span:nth-child(3){animation-delay:.4s}
+@keyframes dots{0%,100%{opacity:.2}50%{opacity:1}}
+.sb-bottom{margin-top:auto;padding:12px 8px;border-top:1px solid var(--b)}
+.sb-user{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px}
+.sb-avatar{width:26px;height:26px;background:linear-gradient(135deg,var(--gold),#C83200);border-radius:6px;display:grid;place-items:center;font-size:12px;flex-shrink:0}
+.sb-uname{font-size:12px;color:var(--cream2);font-weight:400}
+.sb-uprof{font-family:var(--mono);font-size:9px;color:var(--cream4)}
+
+/* CONTENT AREA */
+.house-content{overflow:hidden;position:relative}
+.room{position:absolute;inset:0;overflow-y:auto;display:none;animation:fi .35s ease}
+.room.active{display:block}
+
+/* CHAT ROOM */
+.chat-room{display:flex;flex-direction:column;height:100%}
+.chat-header{padding:14px 20px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.chat-av{width:30px;height:30px;background:linear-gradient(135deg,var(--gold),#C83200);border-radius:8px;display:grid;place-items:center;font-size:13px;flex-shrink:0}
+.chat-hname{font-family:var(--display);font-size:15px;font-weight:500}
+.chat-hstatus{font-family:var(--mono);font-size:10px;color:#22C55E;letter-spacing:.5px}
+.chat-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
+.chat-msgs::-webkit-scrollbar{width:4px}
+.chat-msgs::-webkit-scrollbar-track{background:transparent}
+.chat-msgs::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px}
+.msg{display:flex;flex-direction:column;max-width:88%}
+.msg.u{align-self:flex-end;align-items:flex-end}
+.msg.b{align-self:flex-start;align-items:flex-start}
+.mbubble{padding:9px 13px;font-size:12.5px;line-height:1.55;border-radius:10px}
+.msg.b .mbubble{background:var(--ink4);border:1px solid var(--b);color:var(--cream2);border-radius:3px 10px 10px 10px}
+.msg.u .mbubble{background:var(--gold);color:var(--ink);font-weight:500;border-radius:10px 3px 10px 10px}
+.mtime{font-family:var(--mono);font-size:9.5px;color:var(--cream4);margin-top:3px;padding:0 3px}
+.typing{display:flex;gap:4px;padding:10px 14px;background:var(--ink4);border:1px solid var(--b);border-radius:3px 10px 10px 10px;width:fit-content}
+.typing span{width:5px;height:5px;background:var(--cream4);border-radius:50%;animation:typ 1.2s ease infinite}
+.typing span:nth-child(2){animation-delay:.2s}
+.typing span:nth-child(3){animation-delay:.4s}
+@keyframes typ{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-4px);opacity:1}}
+.chat-input-area{padding:12px 16px;border-top:1px solid var(--b);display:flex;gap:8px;flex-shrink:0}
+.chat-input{flex:1;background:var(--ink4);border:1px solid var(--b);color:var(--cream);padding:9px 13px;border-radius:8px;font-family:var(--body);font-size:13px;outline:none;transition:border-color .2s}
+.chat-input:focus{border-color:var(--gb)}
+.chat-input::placeholder{color:var(--cream4)}
+.chat-send{background:var(--gold);color:var(--ink);border:none;padding:9px 16px;border-radius:8px;font-family:var(--mono);font-size:11px;letter-spacing:.5px;cursor:pointer;transition:all .2s;font-weight:500}
+.chat-send:hover{background:var(--gold2)}
+
+/* MODULE ROOMS */
+.mod-room{padding:20px;height:100%;overflow-y:auto}
+.mod-room::-webkit-scrollbar{width:4px}
+.mod-room::-webkit-scrollbar-track{background:transparent}
+.mod-room::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px}
+.mod-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.mod-title{display:flex;align-items:center;gap:8px}
+.mod-icon{font-size:18px}
+.mod-name{font-family:var(--display);font-size:20px;font-weight:500;letter-spacing:-.3px}
+.mod-desc{font-family:var(--mono);font-size:9.5px;color:var(--cream4);letter-spacing:.5px;margin-top:2px}
+.mod-actions{display:flex;gap:8px}
+.mod-btn{padding:7px 14px;border-radius:6px;font-family:var(--mono);font-size:10px;letter-spacing:.8px;text-transform:uppercase;cursor:pointer;transition:all .2s;border:1px solid var(--b2);background:transparent;color:var(--cream3)}
+.mod-btn:hover{border-color:var(--gb);color:var(--gold2)}
+.mod-btn.primary{background:var(--gold);color:var(--ink);border-color:transparent;font-weight:500}
+.mod-btn.primary:hover{background:var(--gold2)}
+.mod-search{display:flex;gap:8px;margin-bottom:12px}
+.mod-search input{flex:1;background:var(--ink4);border:1px solid var(--b);color:var(--cream);padding:7px 12px;border-radius:6px;font-family:var(--body);font-size:12px;outline:none;transition:border-color .2s}
+.mod-search input:focus{border-color:var(--gb)}
+.mod-search input::placeholder{color:var(--cream4)}
+.mod-table{width:100%;border-collapse:collapse}
+.mod-table th{text-align:left;padding:7px 10px;font-family:var(--mono);font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--cream4);border-bottom:1px solid var(--b)}
+.mod-table td{padding:9px 10px;font-size:12.5px;color:var(--cream2);border-bottom:1px solid rgba(255,255,255,.03)}
+.mod-table tr:hover td{background:rgba(255,255,255,.02)}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:100px;font-family:var(--mono);font-size:9.5px;letter-spacing:.5px}
+.badge.active{background:rgba(34,197,94,.12);color:#22C55E;border:1px solid rgba(34,197,94,.25)}
+.badge.followup{background:rgba(245,158,11,.12);color:#F59E0B;border:1px solid rgba(245,158,11,.25)}
+.badge.discharged{background:rgba(100,116,139,.12);color:#94A3B8;border:1px solid rgba(100,116,139,.25)}
+.badge.overdue{background:rgba(239,68,68,.12);color:#EF4444;border:1px solid rgba(239,68,68,.25)}
+.badge.paid{background:rgba(34,197,94,.12);color:#22C55E;border:1px solid rgba(34,197,94,.25)}
+.badge.pending{background:rgba(245,158,11,.12);color:#F59E0B;border:1px solid rgba(245,158,11,.25)}
+.mod-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.mstat{background:var(--ink4);border:1px solid var(--b);border-radius:8px;padding:12px 14px}
+.mstat-l{font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--cream4);margin-bottom:4px}
+.mstat-v{font-family:var(--display);font-size:22px;font-weight:500;color:var(--cream)}
+.mstat-v .g{color:var(--gold2)}.mstat-v .gr{color:#22C55E}.mstat-v .am{color:#F59E0B}
+.mstat-s{font-size:11px;color:var(--cream4);margin-top:2px}
+.row-actions{display:flex;gap:4px}
+.row-btn{background:transparent;border:1px solid var(--b);color:var(--cream4);padding:3px 8px;border-radius:4px;font-size:11px;cursor:pointer;transition:all .2s}
+.row-btn:hover{border-color:var(--gb);color:var(--gold)}
+.mod-empty{text-align:center;padding:48px 20px;color:var(--cream4)}
+.mod-empty p{font-family:var(--display);font-size:18px;font-style:italic;margin-bottom:6px}
+.mod-empty span{font-family:var(--mono);font-size:11px;letter-spacing:.5px}
+
+/* SCENARIO CONTROLS */
+.proto-controls{display:flex;gap:8px;justify-content:center;margin-top:28px;flex-wrap:wrap}
+.scene-btn{background:var(--ink2);border:1px solid var(--b2);color:var(--cream3);padding:10px 20px;border-radius:6px;font-family:var(--mono);font-size:11px;letter-spacing:.8px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.scene-btn:hover,.scene-btn.on{background:var(--gd);border-color:var(--gb);color:var(--gold2)}
+.proto-caption{text-align:center;margin-top:16px;font-family:var(--mono);font-size:11px;color:var(--cream4);letter-spacing:.5px;min-height:20px;transition:all .3s}
+
+/* ── PROFESSIONS DEEP ── */
+.pdtabs{display:flex;gap:0;border:1px solid var(--b);overflow:hidden;margin-top:52px;flex-wrap:wrap}
+.pdtab{flex:1;min-width:140px;background:var(--ink2);border:none;color:var(--cream3);padding:14px 8px;font-family:var(--mono);font-size:10px;letter-spacing:.8px;text-transform:uppercase;cursor:none;transition:all .2s;border-right:1px solid var(--b)}
+.pdtab:last-child{border-right:none}
+.pdtab:hover,.pdtab.on{background:var(--gd);color:var(--gold2)}
+.pdpanel{display:none;margin-top:1px;border:1px solid var(--b)}
+.pdpanel.on{display:grid;grid-template-columns:1fr 1fr;animation:fi .4s ease}
+.pdl{background:var(--ink2);padding:48px;border-right:1px solid var(--b)}
+.pdr{background:var(--ink3);padding:48px}
+.pdr-roman{font-family:var(--display);font-size:13px;font-weight:400;color:var(--gold);letter-spacing:2px;margin-bottom:18px;font-style:italic}
+.pdl h3{font-family:var(--display);font-size:28px;font-weight:400;letter-spacing:-.5px;margin-bottom:6px;line-height:1.1}
+.pd-role{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--cream4);margin-bottom:22px}
+.pdl p{font-size:14.5px;color:var(--cream3);line-height:1.76;margin-bottom:24px;font-weight:300}
+.pd-chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:28px}
+.pd-chip{background:var(--gd);border:1px solid var(--gb);color:var(--gold3);padding:4px 12px;font-family:var(--mono);font-size:10px;letter-spacing:.8px;text-transform:uppercase}
+.pd-quote{border-left:1px solid var(--gold);padding:14px 18px;font-family:var(--display);font-size:16px;font-style:italic;color:var(--cream3);line-height:1.6;opacity:.8}
+.pdr h4{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--cream4);margin-bottom:20px}
+.pd-widgets{display:flex;flex-direction:column;gap:9px;margin-bottom:20px}
+.pdw{background:var(--ink2);border:1px solid var(--b);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;transition:border-color .2s}
+.pdw:hover{border-color:var(--gb)}
+.pdw-label{font-size:12.5px;color:var(--cream3);font-weight:300}
+.pdw-val{font-family:var(--display);font-size:18px;font-weight:500}
+.pdw-val.gold{color:var(--gold2)}.pdw-val.green{color:#22C55E}.pdw-val.amber{color:#F59E0B}
+.pd-chat{background:var(--ink2);border:1px solid var(--b);padding:18px}
+.pdc-h{display:flex;align-items:center;gap:8px;padding-bottom:12px;border-bottom:1px solid var(--b);margin-bottom:12px}
+.pdc-av{width:26px;height:26px;background:var(--gold);display:grid;place-items:center;font-size:11px;color:var(--ink);font-weight:600;font-family:var(--mono);flex-shrink:0}
+.pdc-n{font-family:var(--display);font-size:13px;font-weight:500}
+.pdc-s{font-family:var(--mono);font-size:9px;color:#22C55E;letter-spacing:.8px;text-transform:uppercase}
+.pdmsg{margin-bottom:8px}
+.pdmsg.u{text-align:right}
+.pdmi{display:inline-block;padding:8px 12px;font-size:12px;line-height:1.5;max-width:90%;text-align:left}
+.pdmsg.b .pdmi{background:var(--ink3);border:1px solid var(--b);color:var(--cream2)}
+.pdmsg.u .pdmi{background:var(--gold);color:var(--ink);font-weight:500}
 
 /* ── PRICING ── */
-.pricing-wrap{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);margin-top:64px;border:1px solid var(--border)}
-.pc{background:var(--black2);padding:40px;position:relative;transition:background .3s}
-.pc:hover{background:var(--black3)}
-.pc.hot{background:var(--black3)}
-.pc.hot::before{content:'Most Popular';position:absolute;top:0;right:0;background:var(--gold);color:var(--black);font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:5px 14px;font-weight:500}
-.pc-tier{font-family:var(--mono);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;opacity:.8}
-.pc-price{font-family:var(--display);font-size:56px;font-weight:300;letter-spacing:-2px;line-height:1;margin-bottom:6px}
-.pc-price sup{font-size:22px;vertical-align:super;color:var(--white3)}
-.pc-price .mo{font-size:16px;color:var(--white3);letter-spacing:0}
-.pc-desc{font-size:13px;color:var(--white3);margin-bottom:28px;line-height:1.6;font-weight:300}
-.pc-rule{height:1px;background:var(--border);margin-bottom:24px}
-.pc-feats{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:32px}
-.pc-feats li{font-size:13px;color:var(--white3);display:flex;align-items:center;gap:10px;font-weight:300}
+.pgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--b);margin-top:60px;border:1px solid var(--b)}
+.pc{background:var(--ink2);padding:36px;position:relative;transition:background .3s}
+.pc:hover{background:var(--ink3)}
+.pc.hot{background:var(--ink3)}
+.pc.hot::before{content:'Most Popular';position:absolute;top:0;right:0;background:var(--gold);color:var(--ink);font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:4px 12px;font-weight:500}
+.pc-tier{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;opacity:.8}
+.pc-price{font-family:var(--display);font-size:52px;font-weight:300;letter-spacing:-2px;line-height:1;margin-bottom:5px}
+.pc-price sup{font-size:20px;vertical-align:super;color:var(--cream3)}
+.pc-price .mo{font-size:14px;color:var(--cream3);font-weight:400;letter-spacing:0}
+.pc-desc{font-size:12.5px;color:var(--cream3);margin-bottom:22px;line-height:1.6;font-weight:300}
+.pc-rule{height:1px;background:var(--b);margin-bottom:20px}
+.pc-feats{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:28px}
+.pc-feats li{font-size:12.5px;color:var(--cream3);display:flex;align-items:center;gap:8px;font-weight:300}
 .pc-feats li::before{content:'◆';color:var(--gold);font-size:7px;flex-shrink:0;opacity:.7}
-.pc-btn{width:100%;padding:14px;font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:none;transition:all .2s;border:1px solid var(--border2);background:transparent;color:var(--white3)}
-.pc-btn:hover{border-color:var(--gold-border);color:var(--gold2)}
-.pc-btn.hot{background:var(--gold);color:var(--black);border-color:transparent;font-weight:500}
-.pc-btn.hot:hover{background:var(--gold2);box-shadow:0 8px 32px var(--gold-glow)}
+.pc-btn{width:100%;padding:13px;font-family:var(--mono);font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;cursor:none;transition:all .2s;border:1px solid var(--b2);background:transparent;color:var(--cream3)}
+.pc-btn:hover{border-color:var(--gb);color:var(--gold2)}
+.pc-btn.hot{background:var(--gold);color:var(--ink);border-color:transparent;font-weight:500}
+.pc-btn.hot:hover{background:var(--gold2);box-shadow:0 8px 28px var(--gg)}
 
 /* ── CTA ── */
-.cta-wrap{max-width:1200px;margin:0 auto;padding:80px 56px 120px;text-align:center}
-.cta-inner{background:var(--black2);border:1px solid var(--border);padding:100px 60px;position:relative;overflow:hidden}
-.cta-inner::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
-.cta-inner::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.3}
-.cta-glow{position:absolute;width:600px;height:400px;background:radial-gradient(ellipse,rgba(201,168,76,.07) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
-.cta-inner h2{font-family:var(--display);font-size:clamp(44px,6vw,80px);font-weight:300;letter-spacing:-1.5px;margin-bottom:16px;position:relative;z-index:1;line-height:1}
-.cta-inner h2 em{font-style:italic;color:var(--gold2)}
-.cta-inner p{font-size:16px;color:var(--white3);margin-bottom:48px;line-height:1.75;position:relative;z-index:1;font-weight:300}
-.email-row{display:flex;gap:0;max-width:480px;margin:0 auto;position:relative;z-index:1;border:1px solid var(--border2)}
-.email-inp{flex:1;background:transparent;border:none;color:var(--white);padding:16px 20px;font-family:var(--body);font-size:14px;outline:none}
-.email-inp::placeholder{color:var(--white4)}
-.email-btn{background:var(--gold);color:var(--black);border:none;padding:16px 28px;font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:none;transition:all .2s;white-space:nowrap;font-weight:500}
-.email-btn:hover{background:var(--gold2)}
-.cta-note{font-family:var(--mono);font-size:10px;color:var(--white4);margin-top:16px;position:relative;z-index:1;letter-spacing:1px;text-transform:uppercase}
+.ctawrap{max-width:1200px;margin:0 auto;padding:80px 52px 120px;text-align:center}
+.ctainner{background:var(--ink2);border:1px solid var(--b);padding:96px 60px;position:relative;overflow:hidden}
+.ctainner::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.cta-gl{position:absolute;width:500px;height:400px;background:radial-gradient(circle,rgba(201,168,76,.08) 0%,transparent 70%);bottom:-150px;left:-100px;pointer-events:none}
+.cta-gr{position:absolute;width:400px;height:300px;background:radial-gradient(circle,rgba(201,168,76,.05) 0%,transparent 70%);top:-80px;right:-80px;pointer-events:none}
+.ctainner h2{font-family:var(--display);font-size:clamp(36px,5vw,64px);font-weight:300;letter-spacing:-1px;margin-bottom:14px;position:relative;z-index:1;line-height:1}
+.ctainner h2 em{font-style:italic;color:var(--gold2)}
+.ctainner p{font-size:16px;color:var(--cream3);margin-bottom:44px;line-height:1.75;position:relative;z-index:1;font-weight:300}
+.erow{display:flex;gap:0;max-width:460px;margin:0 auto;position:relative;z-index:1;border:1px solid var(--b2)}
+.einp{flex:1;background:transparent;border:none;color:var(--cream);padding:15px 18px;font-family:var(--body);font-size:14px;outline:none}
+.einp::placeholder{color:var(--cream4)}
+.ebtn{background:var(--gold);color:var(--ink);border:none;padding:15px 26px;font-family:var(--mono);font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;cursor:none;transition:all .2s;font-weight:500;white-space:nowrap}
+.ebtn:hover{background:var(--gold2)}
+.enote{font-family:var(--mono);font-size:10px;color:var(--cream4);margin-top:14px;position:relative;z-index:1;letter-spacing:.8px;text-transform:uppercase}
 
 /* ── FOOTER ── */
-footer{border-top:1px solid var(--border);padding:36px 56px;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2;flex-wrap:wrap;gap:16px}
-.foot-logo{font-family:var(--display);font-weight:400;font-size:18px;letter-spacing:3px;text-transform:uppercase;display:flex;align-items:center;gap:10px}
-.foot-gem{width:6px;height:6px;background:var(--gold);transform:rotate(45deg);opacity:.7}
-.foot-links{display:flex;gap:28px;list-style:none}
-.foot-links a{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--white4);text-decoration:none;transition:color .2s}
-.foot-links a:hover{color:var(--gold)}
-.foot-copy{font-family:var(--mono);font-size:10px;color:var(--white4);letter-spacing:1px;text-transform:uppercase}
+footer{border-top:1px solid var(--b);padding:32px 52px;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2;flex-wrap:wrap;gap:16px}
+.flogo{font-family:var(--display);font-weight:400;font-size:16px;letter-spacing:2.5px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.fgem{width:5px;height:5px;background:var(--gold);transform:rotate(45deg);opacity:.7}
+.flinks{display:flex;gap:24px;list-style:none}
+.flinks a{font-family:var(--mono);font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--cream4);text-decoration:none;transition:color .2s}
+.flinks a:hover{color:var(--gold)}
+.fcopy{font-family:var(--mono);font-size:10px;color:var(--cream4);letter-spacing:.5px}
 
 /* ── REVEAL ── */
 .rv{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s ease}
 .rv.in{opacity:1;transform:translateY(0)}
-.rv-d1{transition-delay:.12s}.rv-d2{transition-delay:.22s}.rv-d3{transition-delay:.32s}
+.rv-d1{transition-delay:.1s}.rv-d2{transition-delay:.2s}.rv-d3{transition-delay:.3s}
 
 @media(max-width:768px){
-  nav{padding:16px 24px}
-  .nav-links,.nav-right .btn-nav-ghost{display:none}
-  .hero{padding:110px 24px 80px}
-  .sw-panel.active,.df-multi,.phil-grid,.pdepth-panel,.data-grid,.pricing-wrap{grid-template-columns:1fr}
-  .pdepth-tabs{flex-wrap:wrap}
+  nav{padding:14px 20px}.nlinks,.nright .bgh{display:none}
+  .hero{padding:100px 24px 60px}
+  .psp.on,.phgrid,.pdpanel.on,.pgrid{grid-template-columns:1fr}
+  .pdtabs{flex-wrap:wrap}
   .sec{padding:60px 24px}
-  .cta-inner{padding:56px 24px}
-  .email-row{flex-direction:column;border:none;gap:8px}
-  .email-inp{border:1px solid var(--border2);padding:14px 16px}
+  .house{grid-template-columns:1fr;grid-template-rows:48px 48px 1fr;height:700px}
+  .house-sidebar{display:flex;flex-direction:row;overflow-x:auto;border-right:none;border-bottom:1px solid var(--b);padding:0 8px}
+  .sb-section,.sb-bottom{display:none}
+  .sb-item{white-space:nowrap;border-radius:20px;padding:6px 10px;font-size:11px}
+  .ctainner{padding:48px 24px}
+  .erow{flex-direction:column;border:none}
+  .einp{border:1px solid var(--b2)}
   footer{flex-direction:column;text-align:center}
 }
 </style>
 </head>
 <body>
 <div id="cur"></div>
-<div id="cur-ring"></div>
+<div id="curR"></div>
 <div class="grain"></div>
-<div class="lines"></div>
+<div class="diag"></div>
 
 <!-- NAV -->
 <nav id="nav">
-  <a href="#" class="logo"><div class="logo-gem"></div>Bespoke</a>
-  <ul class="nav-links">
+  <a href="#" class="logo"><div class="gem"></div>Bespoke</a>
+  <ul class="nlinks">
     <li><a href="#philosophy">Philosophy</a></li>
+    <li><a href="#prototype">Live Demo</a></li>
     <li><a href="#professions">Professions</a></li>
-    <li><a href="#data">Your Data</a></li>
     <li><a href="#pricing">Pricing</a></li>
   </ul>
-  <div class="nav-right">
-    <button class="btn-nav-ghost">Sign in</button>
-    <button class="btn-nav-gold">Begin →</button>
+  <div class="nright">
+    <button class="bgh">Sign in</button>
+    <button class="bgold">Begin →</button>
   </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-glow"></div>
-  <div class="hero-rule"></div>
-  <div class="hero-eyebrow">Introducing Bespoke · Now in private access</div>
-  <h1>Your work.<br/><em>Made for you.</em></h1>
-  <p class="hero-tagline">Built around how you work.</p>
-
-  <div class="hero-ctas">
-    <button class="btn-gold-lg">Request access — 14 days free</button>
-    <button class="btn-ghost-lg">Watch it work</button>
+  <div class="hglow"></div>
+  <div class="hrule"></div>
+  <div class="hey"><div class="hdot"></div>Now in private access · Join 1,400+ professionals</div>
+  <h1>Your work.<br/><em>Finally yours.</em></h1>
+  <p class="htag">Built around how you work.</p>
+  <div class="hctas">
+    <button class="bpri">Request access — free 14 days</button>
+    <button class="bsec" onclick="document.getElementById('prototype').scrollIntoView({behavior:'smooth'})">▶ &nbsp;See it live</button>
   </div>
-
-  <!-- SWITCHER -->
-  <div class="prof-switcher">
-    <div class="sw-eyebrow">Your profession. Your dashboard. No one else's.</div>
-    <div class="sw-tabs">
-      <button class="sw-tab active" data-p="clinic">Physio Clinic</button>
-      <button class="sw-tab" data-p="tutor">Training Center</button>
-      <button class="sw-tab" data-p="gtm">GTM Leader</button>
-      <button class="sw-tab" data-p="pm">Product Manager</button>
-      <button class="sw-tab" data-p="church">Church Manager</button>
-      <button class="sw-tab" data-p="band">Band Manager</button>
+  <div class="psw">
+    <div class="pswl">Your profession. Your dashboard. No one else's.</div>
+    <div class="pswtabs">
+      <button class="pstab on" data-p="clinic">🏥 Clinic</button>
+      <button class="pstab" data-p="tutor">📚 Training</button>
+      <button class="pstab" data-p="gtm">📈 GTM Leader</button>
+      <button class="pstab" data-p="pm">🧩 Product Mgr</button>
+      <button class="pstab" data-p="church">⛪ Church</button>
+      <button class="pstab" data-p="band">🎸 Band</button>
     </div>
-    <div class="sw-preview">
-
-      <div class="sw-panel active" id="sp-clinic">
-        <div class="sw-widget"><div class="sww-label">Today's appointments</div><div class="sww-val"><span class="g">8</span> / 10</div><div class="sww-sub">2 slots remaining</div><div class="sww-bar"><div class="sww-bar-fill" style="width:80%"></div></div></div>
-        <div class="sw-widget"><div class="sww-label">No-show alerts</div><div class="sww-val am">⚠ 2</div><div class="sww-sub">Auto follow-up sent</div><div class="sw-badge">✓ Handled</div></div>
-        <div class="sw-widget"><div class="sww-label">Revenue this month</div><div class="sww-val"><span class="gr">$12,480</span></div><div class="sww-sub">↑ 14% vs last month</div><div class="sww-bar"><div class="sww-bar-fill" style="width:72%"></div></div></div>
+    <div class="psprev">
+      <div class="psp on" id="hp-clinic">
+        <div class="psw-widget"><div class="swl">Today's Appointments</div><div class="swv"><span class="g">8</span> / 10</div><div class="sws">2 slots remaining</div><div class="swbar"><div class="swbf" style="width:80%"></div></div></div>
+        <div class="psw-widget"><div class="swl">No-show Alerts</div><div class="swv am">⚠ 2</div><div class="sws">Auto follow-up sent</div><div class="swbadge">✓ Handled</div></div>
+        <div class="psw-widget"><div class="swl">Revenue This Month</div><div class="swv"><span class="gr">$12,480</span></div><div class="sws">↑ 14% vs last month</div><div class="swbar"><div class="swbf" style="width:72%"></div></div></div>
       </div>
-
-      <div class="sw-panel" id="sp-tutor">
-        <div class="sw-widget"><div class="sww-label">Active students</div><div class="sww-val"><span class="g">47</span></div><div class="sww-sub">3 enrolled this week</div><div class="sww-bar"><div class="sww-bar-fill" style="width:65%"></div></div></div>
-        <div class="sw-widget"><div class="sww-label">Fees outstanding</div><div class="sww-val am">6 students</div><div class="sww-sub">Reminders auto-sent</div><div class="sw-badge">✓ Handled</div></div>
-        <div class="sw-widget"><div class="sww-label">Top performer</div><div class="sww-val gr" style="font-size:20px">Aisha K.</div><div class="sww-sub">Score: 94 / 100</div><div class="sww-bar"><div class="sww-bar-fill" style="width:94%"></div></div></div>
+      <div class="psp" id="hp-tutor">
+        <div class="psw-widget"><div class="swl">Active Students</div><div class="swv"><span class="g">47</span></div><div class="sws">3 enrolled this week</div><div class="swbar"><div class="swbf" style="width:65%"></div></div></div>
+        <div class="psw-widget"><div class="swl">Fees Outstanding</div><div class="swv am">6 students</div><div class="sws">Reminders auto-sent</div><div class="swbadge">✓ Handled</div></div>
+        <div class="psw-widget"><div class="swl">Top Performer</div><div class="swv gr" style="font-size:20px">Aisha K.</div><div class="sws">Score: 94 / 100</div><div class="swbar"><div class="swbf" style="width:94%"></div></div></div>
       </div>
-
-      <div class="sw-panel" id="sp-gtm">
-        <div class="sw-widget"><div class="sww-label">Pipeline this quarter</div><div class="sww-val"><span class="gr">$840K</span></div><div class="sww-sub">↑ 22% vs target</div><div class="sww-bar"><div class="sww-bar-fill" style="width:88%"></div></div></div>
-        <div class="sw-widget"><div class="sww-label">Deals at risk</div><div class="sww-val am">⚠ 3</div><div class="sww-sub">No activity 14+ days</div><div class="sw-badge">✓ Staff flagged</div></div>
-        <div class="sw-widget"><div class="sww-label">CAC this month</div><div class="sww-val"><span class="g">$312</span></div><div class="sww-sub">↓ $40 vs last month</div><div class="sww-bar"><div class="sww-bar-fill" style="width:58%"></div></div></div>
+      <div class="psp" id="hp-gtm">
+        <div class="psw-widget"><div class="swl">Pipeline Q2</div><div class="swv"><span class="gr">$840K</span></div><div class="sws">↑ 22% vs target</div><div class="swbar"><div class="swbf" style="width:88%"></div></div></div>
+        <div class="psw-widget"><div class="swl">Deals at Risk</div><div class="swv am">⚠ 3</div><div class="sws">No activity 14+ days</div><div class="swbadge">✓ Staff flagged</div></div>
+        <div class="psw-widget"><div class="swl">CAC This Month</div><div class="swv"><span class="g">$312</span></div><div class="sws">↓ $40 vs last month</div><div class="swbar"><div class="swbf" style="width:58%"></div></div></div>
       </div>
-
-      <div class="sw-panel" id="sp-pm">
-        <div class="sw-widget"><div class="sww-label">Sprint velocity</div><div class="sww-val"><span class="gr">42 pts</span></div><div class="sww-sub">↑ 6 pts vs last sprint</div><div class="sww-bar"><div class="sww-bar-fill" style="width:78%"></div></div></div>
-        <div class="sw-widget"><div class="sww-label">Blockers open</div><div class="sww-val am">⚠ 4</div><div class="sww-sub">2 unassigned</div><div class="sw-badge">✓ Escalated</div></div>
-        <div class="sw-widget"><div class="sww-label">Roadmap health</div><div class="sww-val gr" style="font-size:20px">On track</div><div class="sww-sub">Q2 milestone: 3 weeks out</div><div class="sww-bar"><div class="sww-bar-fill" style="width:91%"></div></div></div>
+      <div class="psp" id="hp-pm">
+        <div class="psw-widget"><div class="swl">Sprint Velocity</div><div class="swv"><span class="gr">42 pts</span></div><div class="sws">↑ 6 pts vs last sprint</div><div class="swbar"><div class="swbf" style="width:78%"></div></div></div>
+        <div class="psw-widget"><div class="swl">Blockers Open</div><div class="swv am">⚠ 4</div><div class="sws">2 unassigned</div><div class="swbadge">✓ Escalated</div></div>
+        <div class="psw-widget"><div class="swl">Roadmap Health</div><div class="swv gr" style="font-size:18px">On track</div><div class="sws">Q2 milestone: 3 weeks</div><div class="swbar"><div class="swbf" style="width:91%"></div></div></div>
       </div>
-
-      <div class="sw-panel" id="sp-church">
-        <div class="sw-widget"><div class="sww-label">Sunday attendance</div><div class="sww-val"><span class="g">312</span></div><div class="sww-sub">↑ 8% vs last week</div><div class="sww-bar"><div class="sww-bar-fill" style="width:78%"></div></div></div>
-        <div class="sw-widget"><div class="sww-label">Follow-ups pending</div><div class="sww-val am">⚠ 3</div><div class="sww-sub">Drafts ready to send</div><div class="sw-badge">✓ Drafted</div></div>
-        <div class="sw-widget"><div class="sww-label">Tithes this month</div><div class="sww-val"><span class="gr">$18,240</span></div><div class="sww-sub">↑ 5% vs target</div><div class="sww-bar"><div class="sww-bar-fill" style="width:82%"></div></div></div>
+      <div class="psp" id="hp-church">
+        <div class="psw-widget"><div class="swl">Sunday Attendance</div><div class="swv"><span class="g">312</span></div><div class="sws">↑ 8% vs last week</div><div class="swbar"><div class="swbf" style="width:78%"></div></div></div>
+        <div class="psw-widget"><div class="swl">Follow-ups Pending</div><div class="swv am">⚠ 3</div><div class="sws">Drafts ready to send</div><div class="swbadge">✓ Drafted</div></div>
+        <div class="psw-widget"><div class="swl">Tithes This Month</div><div class="swv"><span class="gr">$18,240</span></div><div class="sws">↑ 5% vs target</div><div class="swbar"><div class="swbf" style="width:82%"></div></div></div>
       </div>
-
-      <div class="sw-panel" id="sp-band">
-        <div class="sw-widget"><div class="sww-label">Upcoming gigs</div><div class="sww-val"><span class="g">6</span></div><div class="sww-sub">Next: Friday, The Venue</div><div class="sww-bar"><div class="sww-bar-fill" style="width:60%"></div></div></div>
-        <div class="sw-widget"><div class="sww-label">Payments pending</div><div class="sww-val am">$3,200</div><div class="sww-sub">2 venues overdue</div><div class="sw-badge">✓ Chasing</div></div>
-        <div class="sw-widget"><div class="sww-label">Revenue this month</div><div class="sww-val"><span class="gr">$9,500</span></div><div class="sww-sub">↑ 18% vs last month</div><div class="sww-bar"><div class="sww-bar-fill" style="width:76%"></div></div></div>
+      <div class="psp" id="hp-band">
+        <div class="psw-widget"><div class="swl">Upcoming Gigs</div><div class="swv"><span class="g">6</span></div><div class="sws">Next: Friday, The Venue</div><div class="swbar"><div class="swbf" style="width:60%"></div></div></div>
+        <div class="psw-widget"><div class="swl">Payments Pending</div><div class="swv am">$3,200</div><div class="sws">2 venues overdue</div><div class="swbadge">✓ Chasing</div></div>
+        <div class="psw-widget"><div class="swl">Revenue This Month</div><div class="swv"><span class="gr">$9,500</span></div><div class="sws">↑ 18% vs last month</div><div class="swbar"><div class="swbf" style="width:76%"></div></div></div>
       </div>
-
     </div>
   </div>
-  <div class="scroll-line"><div class="sl-bar"></div></div>
+  <div class="scl"><div class="sclb"></div></div>
 </section>
 
 <!-- MARQUEE -->
 <div class="mq">
-  <div class="mq-track">
-    <div class="mq-item"><span class="mq-gem">◆</span>Physio Clinic</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>Dental Practice</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>Training Center</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>Private Tutor</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>GTM Leader</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>Sales Manager</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>Product Manager</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>QA Engineer</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>Church Manager</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>Band Manager</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>Accountant</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>Event Planner</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>Vet Clinic</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>Restaurant Owner</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>Physio Clinic</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>Dental Practice</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>Training Center</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>Private Tutor</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>GTM Leader</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>Sales Manager</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>Product Manager</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>QA Engineer</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>Church Manager</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>Band Manager</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>Accountant</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>Event Planner</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>Vet Clinic</div>
-    <div class="mq-item"><span class="mq-gem">◆</span>Restaurant Owner</div>
+  <div class="mqt">
+    <div class="mqi"><span class="mqg">◆</span>Physio Clinic</div><div class="mqi"><span class="mqg">◆</span>Dental Practice</div><div class="mqi"><span class="mqg">◆</span>Training Center</div><div class="mqi"><span class="mqg">◆</span>Private Tutor</div><div class="mqi"><span class="mqg">◆</span>GTM Leader</div><div class="mqi"><span class="mqg">◆</span>Sales Manager</div><div class="mqi"><span class="mqg">◆</span>Product Manager</div><div class="mqi"><span class="mqg">◆</span>QA Engineer</div><div class="mqi"><span class="mqg">◆</span>Church Manager</div><div class="mqi"><span class="mqg">◆</span>Band Manager</div><div class="mqi"><span class="mqg">◆</span>Accountant</div><div class="mqi"><span class="mqg">◆</span>Vet Clinic</div><div class="mqi"><span class="mqg">◆</span>Event Planner</div><div class="mqi"><span class="mqg">◆</span>Restaurant Owner</div>
+    <div class="mqi"><span class="mqg">◆</span>Physio Clinic</div><div class="mqi"><span class="mqg">◆</span>Dental Practice</div><div class="mqi"><span class="mqg">◆</span>Training Center</div><div class="mqi"><span class="mqg">◆</span>Private Tutor</div><div class="mqi"><span class="mqg">◆</span>GTM Leader</div><div class="mqi"><span class="mqg">◆</span>Sales Manager</div><div class="mqi"><span class="mqg">◆</span>Product Manager</div><div class="mqi"><span class="mqg">◆</span>QA Engineer</div><div class="mqi"><span class="mqg">◆</span>Church Manager</div><div class="mqi"><span class="mqg">◆</span>Band Manager</div><div class="mqi"><span class="mqg">◆</span>Accountant</div><div class="mqi"><span class="mqg">◆</span>Vet Clinic</div><div class="mqi"><span class="mqg">◆</span>Event Planner</div><div class="mqi"><span class="mqg">◆</span>Restaurant Owner</div>
   </div>
 </div>
 
-<div class="ornament"><div class="orn-line"></div><div class="orn-gem"></div><div class="orn-line r"></div></div>
+<div class="orn"><div class="ornl"></div><div class="orng"></div><div class="ornl r"></div></div>
 
 <!-- PHILOSOPHY -->
 <section class="sec" id="philosophy">
   <div class="rv">
-    <div class="sec-label">The philosophy</div>
-    <h2 class="sec-title">Software has never truly<br/><em>fit</em> the way you work.</h2>
-    <p class="sec-sub">Until now. Bespoke builds itself around your profession — not the other way around.</p>
+    <div class="slbl">The philosophy</div>
+    <h2 class="stitle">The House.<br/><em>The Engineer.</em></h2>
+    <p class="ssub">Every professional gets their own House — a web app uniquely theirs. The Engineer lives inside it and builds new rooms on demand.</p>
   </div>
-  <div class="phil-grid rv rv-d1">
-    <div class="phil-card">
-      <div class="phil-num">I</div>
-      <h3>Your app builds <em>itself</em></h3>
-      <p>Every conversation you have shapes your dashboard. Every question you ask becomes a widget. After three months, your Bespoke looks nothing like anyone else's. That's the point.</p>
+  <div class="phgrid rv rv-d1">
+    <div class="phcard">
+      <div class="phnum">I</div>
+      <h3>The Engineer <em>builds your rooms</em></h3>
+      <p>Tell the Engineer what you need to track. It builds a fully functional, custom-designed module — not a template — and it appears in your House immediately. A physio's Patients room looks nothing like a church's Members room.</p>
     </div>
-    <div class="phil-card">
-      <div class="phil-num">II</div>
-      <h3>Your staff <em>works for you</em></h3>
-      <p>You don't query. You don't check. Your AI staff monitors, tracks, follows up, and surfaces what matters — before you knew to ask. Delivered straight to WhatsApp or Telegram.</p>
+    <div class="phcard">
+      <div class="phnum">II</div>
+      <h3>Both doors into <em>every room</em></h3>
+      <p>You and the Engineer both write to the same data. Say "add a patient" in WhatsApp and the record appears in your module. Click "Add" in the web app and the Engineer knows about it on its next turn. Two doors. One room.</p>
     </div>
-    <div class="phil-card">
-      <div class="phil-num">III</div>
-      <h3>Your data <em>stays yours</em></h3>
-      <p>Every customer gets a dedicated isolated instance. Your data never touches a shared pool. No two Bespoke products share infrastructure. What's yours is exclusively yours.</p>
+    <div class="phcard">
+      <div class="phnum">III</div>
+      <h3>Your staff works <em>while you sleep</em></h3>
+      <p>Scheduled staff agents monitor your data around the clock. Morning appointment briefs, overdue invoice alerts, attendance pattern flags — delivered to WhatsApp before you ask. You don't query. They tell you.</p>
     </div>
-    <div class="phil-card">
-      <div class="phil-num">IV</div>
-      <h3>Onboarding is a <em>conversation</em></h3>
-      <p>No forms. No setup wizards. No importing spreadsheets. Bespoke asks how your Monday feels and begins building from your answers. You're working in minutes, not days.</p>
+    <div class="phcard">
+      <div class="phnum">IV</div>
+      <h3>The Engineer <em>explains everything</em></h3>
+      <p>You are not a developer. The Engineer never uses technical language. When it builds a module, it tells you what it built and why, in plain words that make sense for your profession. No configuration. No jargon. No surprises.</p>
     </div>
   </div>
 </section>
 
-<div class="ornament"><div class="orn-line"></div><div class="orn-gem"></div><div class="orn-line r"></div></div>
+<div class="orn"><div class="ornl"></div><div class="orng"></div><div class="ornl r"></div></div>
+
+<!-- ══ INTERACTIVE PROTOTYPE ══ -->
+<section class="proto-section" id="prototype">
+  <div class="proto-inner">
+    <div class="proto-header rv">
+      <div class="proto-badge">⚙ Live Product Demo — Interactive</div>
+      <h2 class="stitle" style="text-align:center">Experience the House<br/><em>& the Engineer.</em></h2>
+      <p class="ssub" style="margin:0 auto;text-align:center">This is a real interactive prototype of the Bespoke product. Watch the Engineer build modules in real time. Use the controls below to explore different scenarios.</p>
+    </div>
+
+    <!-- THE HOUSE -->
+    <div class="house rv rv-d1">
+      <!-- TOP BAR -->
+      <div class="house-topbar">
+        <div class="htb-logo"><div class="htb-gem"></div>Bespoke</div>
+        <div class="htb-right">
+          <div class="htb-dots">
+            <div class="htb-d" style="background:#FF5F57"></div>
+            <div class="htb-d" style="background:#FFBD2E"></div>
+            <div class="htb-d" style="background:#28CA41"></div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="htb-dot"></div>
+          <div class="htb-name" id="htb-prof">Dr. Priya · Physiotherapist</div>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div class="house-sidebar" id="sidebar">
+        <div class="sb-section" style="margin-top:8px">Menu</div>
+        <div class="sb-item active" data-room="chat"><span class="sb-icon">💬</span>Chat with Staff</div>
+        <div class="sb-section" style="margin-top:8px">My Rooms</div>
+        <!-- modules injected here -->
+        <div id="sb-modules"></div>
+        <div class="sb-bottom">
+          <div class="sb-user">
+            <div class="sb-avatar">B</div>
+            <div><div class="sb-uname" id="sb-uname">Dr. Priya</div><div class="sb-uprof" id="sb-uprof">Physiotherapist</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTENT -->
+      <div class="house-content">
+        <!-- CHAT ROOM -->
+        <div class="room active" id="room-chat">
+          <div class="chat-room">
+            <div class="chat-header">
+              <div class="chat-av">⚙</div>
+              <div>
+                <div class="chat-hname">Bespoke Staff</div>
+                <div class="chat-hstatus">● Active now</div>
+              </div>
+            </div>
+            <div class="chat-msgs" id="chat-msgs"></div>
+            <div class="chat-input-area">
+              <input class="chat-input" id="chat-input" type="text" placeholder="Type a message..." readonly/>
+              <button class="chat-send" id="chat-send">Send</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PATIENTS MODULE -->
+        <div class="room" id="room-patients">
+          <div class="mod-room">
+            <div class="mod-header">
+              <div class="mod-title">
+                <div class="mod-icon">🏥</div>
+                <div><div class="mod-name">Patients</div><div class="mod-desc">Track patients, appointments, treatment status</div></div>
+              </div>
+              <div class="mod-actions">
+                <button class="mod-btn primary">+ Add Patient</button>
+                <button class="mod-btn">Export</button>
+              </div>
+            </div>
+            <div class="mod-stats">
+              <div class="mstat"><div class="mstat-l">Active Patients</div><div class="mstat-v"><span class="g">24</span></div><div class="mstat-s">3 new this month</div></div>
+              <div class="mstat"><div class="mstat-l">Follow-up Needed</div><div class="mstat-v"><span class="am">5</span></div><div class="mstat-s">Flagged by staff</div></div>
+              <div class="mstat"><div class="mstat-l">Avg Sessions</div><div class="mstat-v"><span class="gr">6.2</span></div><div class="mstat-s">Per patient this quarter</div></div>
+            </div>
+            <div class="mod-search"><input placeholder="Search patients..." type="text"/></div>
+            <table class="mod-table">
+              <thead><tr><th>Patient</th><th>Condition</th><th>Last Visit</th><th>Next Appt</th><th>Status</th><th></th></tr></thead>
+              <tbody>
+                <tr><td>Sarah Mitchell</td><td>Lower back pain</td><td>Apr 5</td><td>Apr 12</td><td><span class="badge active">Active</span></td><td><div class="row-actions"><button class="row-btn">Edit</button></div></td></tr>
+                <tr><td>David Okonkwo</td><td>Knee rehab post-op</td><td>Apr 3</td><td>Apr 10</td><td><span class="badge followup">Follow-up</span></td><td><div class="row-actions"><button class="row-btn">Edit</button></div></td></tr>
+                <tr><td>Mrs Chen</td><td>Shoulder impingement</td><td>Mar 28</td><td>Cancelled</td><td><span class="badge followup">Follow-up</span></td><td><div class="row-actions"><button class="row-btn">Edit</button></div></td></tr>
+                <tr><td>James Patel</td><td>Sports injury — ankle</td><td>Apr 6</td><td>Apr 13</td><td><span class="badge active">Active</span></td><td><div class="row-actions"><button class="row-btn">Edit</button></div></td></tr>
+                <tr><td>Grace Adeyemi</td><td>Chronic neck tension</td><td>Feb 14</td><td>—</td><td><span class="badge discharged">Discharged</span></td><td><div class="row-actions"><button class="row-btn">Edit</button></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- INVOICES MODULE -->
+        <div class="room" id="room-invoices">
+          <div class="mod-room">
+            <div class="mod-header">
+              <div class="mod-title">
+                <div class="mod-icon">🧾</div>
+                <div><div class="mod-name">Invoices</div><div class="mod-desc">Track payments, outstanding balances, billing</div></div>
+              </div>
+              <div class="mod-actions">
+                <button class="mod-btn primary">+ New Invoice</button>
+                <button class="mod-btn">Export</button>
+              </div>
+            </div>
+            <div class="mod-stats">
+              <div class="mstat"><div class="mstat-l">This Month</div><div class="mstat-v"><span class="gr">$12,480</span></div><div class="mstat-s">↑ 14% vs last month</div></div>
+              <div class="mstat"><div class="mstat-l">Outstanding</div><div class="mstat-v"><span class="am">$2,140</span></div><div class="mstat-s">4 invoices unpaid</div></div>
+              <div class="mstat"><div class="mstat-l">Overdue (7d+)</div><div class="mstat-v"><span style="color:#EF4444">$780</span></div><div class="mstat-s">Staff chasing</div></div>
+            </div>
+            <div class="mod-search"><input placeholder="Search invoices..." type="text"/></div>
+            <table class="mod-table">
+              <thead><tr><th>Invoice</th><th>Patient</th><th>Amount</th><th>Date</th><th>Status</th><th></th></tr></thead>
+              <tbody>
+                <tr><td>INV-0041</td><td>Sarah Mitchell</td><td>$180</td><td>Apr 5</td><td><span class="badge paid">Paid</span></td><td><div class="row-actions"><button class="row-btn">View</button></div></td></tr>
+                <tr><td>INV-0040</td><td>David Okonkwo</td><td>$240</td><td>Apr 3</td><td><span class="badge pending">Pending</span></td><td><div class="row-actions"><button class="row-btn">Chase</button></div></td></tr>
+                <tr><td>INV-0039</td><td>Mrs Chen</td><td>$180</td><td>Mar 28</td><td><span class="badge overdue">Overdue</span></td><td><div class="row-actions"><button class="row-btn">Chase</button></div></td></tr>
+                <tr><td>INV-0038</td><td>James Patel</td><td>$320</td><td>Apr 6</td><td><span class="badge paid">Paid</span></td><td><div class="row-actions"><button class="row-btn">View</button></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- VISITORS MODULE (church) -->
+        <div class="room" id="room-visitors">
+          <div class="mod-room">
+            <div class="mod-header">
+              <div class="mod-title">
+                <div class="mod-icon">🙏</div>
+                <div><div class="mod-name">Visitors</div><div class="mod-desc">Track new visitors, follow-up status, integration</div></div>
+              </div>
+              <div class="mod-actions">
+                <button class="mod-btn primary">+ Add Visitor</button>
+              </div>
+            </div>
+            <div class="mod-stats">
+              <div class="mstat"><div class="mstat-l">This Month</div><div class="mstat-v"><span class="g">18</span></div><div class="mstat-s">New visitors</div></div>
+              <div class="mstat"><div class="mstat-l">Awaiting Follow-up</div><div class="mstat-v"><span class="am">7</span></div><div class="mstat-s">Staff drafted messages</div></div>
+              <div class="mstat"><div class="mstat-l">Became Members</div><div class="mstat-v"><span class="gr">4</span></div><div class="mstat-s">This quarter</div></div>
+            </div>
+            <table class="mod-table">
+              <thead><tr><th>Name</th><th>First Visit</th><th>Visits</th><th>Follow-up</th><th>Status</th><th></th></tr></thead>
+              <tbody>
+                <tr><td>Marcus Reed</td><td>Mar 10</td><td>3</td><td>Absent 3wks</td><td><span class="badge followup">Urgent</span></td><td><div class="row-actions"><button class="row-btn">Message</button></div></td></tr>
+                <tr><td>Ann & David Okonkwo</td><td>Mar 31</td><td>2</td><td>Sent Apr 2</td><td><span class="badge active">Contacted</span></td><td><div class="row-actions"><button class="row-btn">View</button></div></td></tr>
+                <tr><td>Theresa Williams</td><td>Apr 7</td><td>1</td><td>Pending</td><td><span class="badge pending">New</span></td><td><div class="row-actions"><button class="row-btn">Message</button></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- PIPELINE MODULE (GTM) -->
+        <div class="room" id="room-pipeline">
+          <div class="mod-room">
+            <div class="mod-header">
+              <div class="mod-title">
+                <div class="mod-icon">📈</div>
+                <div><div class="mod-name">Pipeline</div><div class="mod-desc">Track deals, stages, ARR, risk signals</div></div>
+              </div>
+              <div class="mod-actions">
+                <button class="mod-btn primary">+ Add Deal</button>
+                <button class="mod-btn">Board View</button>
+              </div>
+            </div>
+            <div class="mod-stats">
+              <div class="mstat"><div class="mstat-l">Q2 Pipeline</div><div class="mstat-v"><span class="gr">$840K</span></div><div class="mstat-s">↑ 22% vs target</div></div>
+              <div class="mstat"><div class="mstat-l">At Risk</div><div class="mstat-v"><span class="am">3 deals</span></div><div class="mstat-s">14d+ no activity</div></div>
+              <div class="mstat"><div class="mstat-l">Win Rate MTD</div><div class="mstat-v"><span class="gr">34%</span></div><div class="mstat-s">↑ 4% vs last month</div></div>
+            </div>
+            <table class="mod-table">
+              <thead><tr><th>Company</th><th>ARR</th><th>Stage</th><th>Last Activity</th><th>Risk</th><th></th></tr></thead>
+              <tbody>
+                <tr><td>Acme Corp</td><td>$80K</td><td>Proposal</td><td>21 days ago</td><td><span class="badge overdue">High Risk</span></td><td><div class="row-actions"><button class="row-btn">Brief</button></div></td></tr>
+                <tr><td>TechCorp</td><td>$45K</td><td>Demo Done</td><td>16 days ago</td><td><span class="badge followup">At Risk</span></td><td><div class="row-actions"><button class="row-btn">Brief</button></div></td></tr>
+                <tr><td>DataFlow Inc</td><td>$120K</td><td>Negotiation</td><td>2 days ago</td><td><span class="badge active">On Track</span></td><td><div class="row-actions"><button class="row-btn">View</button></div></td></tr>
+                <tr><td>Stripe Agency</td><td>$60K</td><td>Discovery</td><td>Today</td><td><span class="badge active">On Track</span></td><td><div class="row-actions"><button class="row-btn">View</button></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div><!-- end house-content -->
+    </div><!-- end house -->
+
+    <!-- SCENARIO CONTROLS -->
+    <div class="proto-controls rv rv-d2">
+      <button class="scene-btn on" data-scene="onboard">🎬 Onboarding Conversation</button>
+      <button class="scene-btn" data-scene="build">🏗 Engineer Builds a Module</button>
+      <button class="scene-btn" data-scene="proactive">🔔 Staff Works Proactively</button>
+      <button class="scene-btn" data-scene="church">⛪ Church Manager</button>
+      <button class="scene-btn" data-scene="gtm">📈 GTM Leader</button>
+    </div>
+    <div class="proto-caption" id="proto-caption">Watch the Engineer have a listening conversation with Dr. Priya on her first day.</div>
+  </div>
+</section>
+
+<div class="orn"><div class="ornl"></div><div class="orng"></div><div class="ornl r"></div></div>
 
 <!-- PROFESSIONS -->
 <section class="sec" id="professions">
   <div class="rv">
-    <div class="sec-label">Built for your world</div>
-    <h2 class="sec-title">Every profession.<br/><em>Entirely different.</em></h2>
-    <p class="sec-sub">A physio's Tuesday looks nothing like a GTM leader's. Their Bespoke products don't either.</p>
+    <div class="slbl">Built for your world</div>
+    <h2 class="stitle">Every profession.<br/><em>Entirely different.</em></h2>
+    <p class="ssub">A physio's Tuesday looks nothing like a GTM leader's. Their Houses don't either.</p>
   </div>
-
-  <div class="pdepth-tabs rv rv-d1">
-    <button class="pdepth-tab active" data-panel="pd-clinic">Clinic Owner</button>
-    <button class="pdepth-tab" data-panel="pd-tutor">Training Center</button>
-    <button class="pdepth-tab" data-panel="pd-gtm">GTM / Sales</button>
-    <button class="pdepth-tab" data-panel="pd-pm">PM / Engineer</button>
-    <button class="pdepth-tab" data-panel="pd-church">Church Manager</button>
+  <div class="pdtabs rv rv-d1">
+    <button class="pdtab on" data-panel="pd-clinic">🏥 Clinic Owner</button>
+    <button class="pdtab" data-panel="pd-tutor">📚 Training Center</button>
+    <button class="pdtab" data-panel="pd-gtm">📈 GTM / Sales</button>
+    <button class="pdtab" data-panel="pd-pm">🧩 PM / Engineer</button>
+    <button class="pdtab" data-panel="pd-church">⛪ Church Manager</button>
   </div>
-
   <!-- CLINIC -->
-  <div class="pdepth-panel active" id="pd-clinic">
-    <div class="pd-left">
-      <div class="pd-roman">I.</div>
-      <h3>Physio · Dental · Vet</h3>
-      <div class="pd-role">Healthcare SMB Owner</div>
-      <p>Your skill is healing. But half your day disappears into appointment chaos, no-show chasing, and billing gaps. Bespoke gives you a staff that handles all of it — so you can focus on patients.</p>
-      <div class="pd-chips">
-        <span class="pd-chip">Appointment Agent</span>
-        <span class="pd-chip">No-show Handler</span>
-        <span class="pd-chip">Billing Tracker</span>
-        <span class="pd-chip">Patient Comms</span>
-      </div>
-      <div class="pd-quote">"I used to spend 2 hours on admin before seeing my first patient. Now my staff handles it before I wake up."</div>
-    </div>
-    <div class="pd-right">
-      <h4>Live dashboard · WhatsApp staff</h4>
-      <div class="pd-widgets">
-        <div class="pdw"><span class="pdw-label">Today's appointments</span><span class="pdw-val gold">8 / 10</span></div>
-        <div class="pdw"><span class="pdw-label">Pending invoices</span><span class="pdw-val amber">$2,140</span></div>
-        <div class="pdw"><span class="pdw-label">Patient retention</span><span class="pdw-val green">91%</span></div>
-        <div class="pdw"><span class="pdw-label">No-shows this week</span><span class="pdw-val amber">2 — followed up</span></div>
-      </div>
-      <div class="pd-chat">
-        <div class="pdc-header"><div class="pdc-gem">B</div><div><div class="pdc-name">Bespoke Staff</div><div class="pdc-status">● Active</div></div></div>
-        <div class="msg b"><div class="mi">Morning Dr. Patel 👋 Mrs. Chen cancelled her 10am. I've offered the slot to 3 waitlisted patients and sent her a rebooking link.</div></div>
-        <div class="msg u"><div class="mi">Great. Any outstanding invoices?</div></div>
-        <div class="msg b"><div class="mi">4 invoices overdue 7+ days. Gentle reminders sent to all. Want me to escalate any?</div></div>
-      </div>
-    </div>
+  <div class="pdpanel on" id="pd-clinic">
+    <div class="pdl"><div class="pdr-roman">I.</div><h3>Physio · Dental · Vet</h3><div class="pd-role">Healthcare SMB Owner</div><p>Your skill is healing. But half your day disappears into appointment chaos, no-show chasing, and billing gaps. Your Engineer builds you a Patients module, an Appointments module, an Invoices module — all from a single conversation. You never designed a schema.</p><div class="pd-chips"><span class="pd-chip">Appointment Agent</span><span class="pd-chip">No-show Handler</span><span class="pd-chip">Billing Tracker</span><span class="pd-chip">Patient Comms</span></div><div class="pd-quote">"I used to spend 2 hours on admin before seeing my first patient. Now my staff handles it before I wake up."</div></div>
+    <div class="pdr"><h4>Live Dashboard · WhatsApp Staff</h4><div class="pd-widgets"><div class="pdw"><span class="pdw-label">Today's appointments</span><span class="pdw-val gold">8 / 10</span></div><div class="pdw"><span class="pdw-label">Pending invoices</span><span class="pdw-val amber">$2,140</span></div><div class="pdw"><span class="pdw-label">Patient retention</span><span class="pdw-val green">91%</span></div><div class="pdw"><span class="pdw-label">No-shows this week</span><span class="pdw-val amber">2 — followed up</span></div></div><div class="pd-chat"><div class="pdc-h"><div class="pdc-av">B</div><div><div class="pdc-n">Bespoke Staff</div><div class="pdc-s">● Active</div></div></div><div class="pdmsg b"><div class="pdmi">Morning Dr. Patel 👋 Mrs Chen cancelled her 10am. Offered the slot to 3 waitlisted patients and sent her a rebooking link.</div></div><div class="pdmsg u"><div class="pdmi">Great. Any outstanding invoices?</div></div><div class="pdmsg b"><div class="pdmi">4 invoices overdue 7+ days. Gentle reminders sent to all. Want me to escalate any?</div></div></div></div>
   </div>
-
   <!-- TUTOR -->
-  <div class="pdepth-panel" id="pd-tutor">
-    <div class="pd-left">
-      <div class="pd-roman">II.</div>
-      <h3>Training Center · Tutor</h3>
-      <div class="pd-role">Education & Coaching</div>
-      <p>You're building futures — but fee collection, progress tracking, and scheduling are consuming you. Your Bespoke staff handles the admin so you can stay in the teaching.</p>
-      <div class="pd-chips">
-        <span class="pd-chip">Progress Tracker</span>
-        <span class="pd-chip">Fee Reminder</span>
-        <span class="pd-chip">Schedule Manager</span>
-        <span class="pd-chip">Parent Comms</span>
-      </div>
-      <div class="pd-quote">"Chasing fees used to damage my relationship with parents. Now my staff handles it professionally. I never have to ask."</div>
-    </div>
-    <div class="pd-right">
-      <h4>Live dashboard · WhatsApp staff</h4>
-      <div class="pd-widgets">
-        <div class="pdw"><span class="pdw-label">Active students</span><span class="pdw-val gold">47</span></div>
-        <div class="pdw"><span class="pdw-label">Fees outstanding</span><span class="pdw-val amber">6 students</span></div>
-        <div class="pdw"><span class="pdw-label">Avg. score this week</span><span class="pdw-val green">78 / 100</span></div>
-        <div class="pdw"><span class="pdw-label">Top student</span><span class="pdw-val" style="color:var(--gold2)">Aisha K. — 94</span></div>
-      </div>
-      <div class="pd-chat">
-        <div class="pdc-header"><div class="pdc-gem">B</div><div><div class="pdc-name">Bespoke Staff</div><div class="pdc-status">● Active</div></div></div>
-        <div class="msg b"><div class="mi">Hi Sarah 👋 Fee reminders sent to 6 families. Also — James hasn't submitted homework 3 weeks running. Want me to send a kind note to his parents?</div></div>
-        <div class="msg u"><div class="mi">Yes please, in my tone</div></div>
-        <div class="msg b"><div class="mi">Done ✓ Sent warmly. Next week's schedule drafted — 2 conflicts flagged for your review.</div></div>
-      </div>
-    </div>
+  <div class="pdpanel" id="pd-tutor">
+    <div class="pdl"><div class="pdr-roman">II.</div><h3>Training Center · Tutor</h3><div class="pd-role">Education & Coaching</div><p>Fee collection is awkward. Student progress in notebooks. Scheduling a nightmare of group chats. Your Engineer builds you a Students module, a Fees module, a Schedule module — each designed for how you actually teach, not how a generic school admin system works.</p><div class="pd-chips"><span class="pd-chip">Progress Tracker</span><span class="pd-chip">Fee Reminder</span><span class="pd-chip">Schedule Manager</span><span class="pd-chip">Parent Comms</span></div><div class="pd-quote">"Chasing fees used to damage my relationship with parents. Now my staff handles it professionally. I never have to ask."</div></div>
+    <div class="pdr"><h4>Live Dashboard · WhatsApp Staff</h4><div class="pd-widgets"><div class="pdw"><span class="pdw-label">Active students</span><span class="pdw-val gold">47</span></div><div class="pdw"><span class="pdw-label">Fees outstanding</span><span class="pdw-val amber">6 students</span></div><div class="pdw"><span class="pdw-label">Avg. score this week</span><span class="pdw-val green">78 / 100</span></div><div class="pdw"><span class="pdw-label">Top student</span><span class="pdw-val" style="color:var(--gold2)">Aisha K. — 94</span></div></div><div class="pd-chat"><div class="pdc-h"><div class="pdc-av">B</div><div><div class="pdc-n">Bespoke Staff</div><div class="pdc-s">● Active</div></div></div><div class="pdmsg b"><div class="pdmi">Hi Sarah 👋 Fees sent to 6 families. Also — James hasn't submitted homework 3 weeks running. Want me to send a kind note to his parents?</div></div><div class="pdmsg u"><div class="pdmi">Yes please, in my tone</div></div><div class="pdmsg b"><div class="pdmi">Done ✓ Sent warmly. Schedule for next week drafted — 2 conflicts flagged for your review.</div></div></div></div>
   </div>
-
   <!-- GTM -->
-  <div class="pdepth-panel" id="pd-gtm">
-    <div class="pd-left">
-      <div class="pd-roman">III.</div>
-      <h3>GTM Leader · Sales Manager</h3>
-      <div class="pd-role">Revenue & Growth</div>
-      <p>You're accountable for the number. But that number lives across HubSpot, spreadsheets, Slack, and your head simultaneously. Bespoke cuts across all of it and tells you what matters before your 9am.</p>
-      <div class="pd-chips">
-        <span class="pd-chip">Pipeline Monitor</span>
-        <span class="pd-chip">Deal Risk Spotter</span>
-        <span class="pd-chip">CAC Tracker</span>
-        <span class="pd-chip">Team Pulse</span>
-      </div>
-      <div class="pd-quote">"I used to walk into board meetings hoping the numbers were right. Now I know before I sit down."</div>
-    </div>
-    <div class="pd-right">
-      <h4>Live dashboard · Telegram staff</h4>
-      <div class="pd-widgets">
-        <div class="pdw"><span class="pdw-label">Pipeline this quarter</span><span class="pdw-val green">$840K</span></div>
-        <div class="pdw"><span class="pdw-label">Deals at risk</span><span class="pdw-val amber">3 flagged</span></div>
-        <div class="pdw"><span class="pdw-label">Win rate MTD</span><span class="pdw-val green">34%</span></div>
-        <div class="pdw"><span class="pdw-label">CAC this month</span><span class="pdw-val gold">$312</span></div>
-      </div>
-      <div class="pd-chat">
-        <div class="pdc-header"><div class="pdc-gem">B</div><div><div class="pdc-name">Bespoke Staff</div><div class="pdc-status">● Active</div></div></div>
-        <div class="msg b"><div class="mi">Morning Alex 👋 3 deals stalled 14+ days — Acme ($80K), TechCorp ($45K), DataFlow ($30K). Talking points drafted for each. Flag to reps?</div></div>
-        <div class="msg u"><div class="mi">Yes. And prep board summary</div></div>
-        <div class="msg b"><div class="mi">Done. Win rate up 4% this week — the new deck is working. Board summary ready in your dashboard.</div></div>
-      </div>
-    </div>
+  <div class="pdpanel" id="pd-gtm">
+    <div class="pdl"><div class="pdr-roman">III.</div><h3>GTM Leader · Sales Manager</h3><div class="pd-role">Revenue & Growth</div><p>Your number lives across HubSpot, spreadsheets, Slack threads, and your head. Your Engineer builds you a Pipeline module, a Deal Risk module, a CAC Tracker — wired to how your specific team tracks deals, with the metrics your CEO actually asks about.</p><div class="pd-chips"><span class="pd-chip">Pipeline Monitor</span><span class="pd-chip">Deal Risk Spotter</span><span class="pd-chip">CAC Tracker</span><span class="pd-chip">Board Summary</span></div><div class="pd-quote">"I used to walk into board meetings hoping the numbers were right. Now I know before I sit down."</div></div>
+    <div class="pdr"><h4>Live Dashboard · Telegram Staff</h4><div class="pd-widgets"><div class="pdw"><span class="pdw-label">Pipeline this quarter</span><span class="pdw-val green">$840K</span></div><div class="pdw"><span class="pdw-label">Deals at risk</span><span class="pdw-val amber">3 flagged</span></div><div class="pdw"><span class="pdw-label">Win rate MTD</span><span class="pdw-val green">34%</span></div><div class="pdw"><span class="pdw-label">CAC this month</span><span class="pdw-val gold">$312</span></div></div><div class="pd-chat"><div class="pdc-h"><div class="pdc-av">B</div><div><div class="pdc-n">Bespoke Staff</div><div class="pdc-s">● Active</div></div></div><div class="pdmsg b"><div class="pdmi">Morning Alex 👋 3 deals stalled 14+ days — Acme ($80K), TechCorp ($45K), DataFlow ($30K). Talking points drafted. Flag to reps?</div></div><div class="pdmsg u"><div class="pdmi">Yes. And prep board summary</div></div><div class="pdmsg b"><div class="pdmi">Done. Win rate up 4% this week. Board summary ready in your dashboard.</div></div></div></div>
   </div>
-
   <!-- PM -->
-  <div class="pdepth-panel" id="pd-pm">
-    <div class="pd-left">
-      <div class="pd-roman">IV.</div>
-      <h3>Product Manager · Engineer · QA</h3>
-      <div class="pd-role">Tech & Product Teams</div>
-      <p>You live across Jira, Notion, Slack, and PRs simultaneously. Context-switching is your tax. Bespoke knows your sprint, your blockers, your team — and brings it all to one place.</p>
-      <div class="pd-chips">
-        <span class="pd-chip">Sprint Tracker</span>
-        <span class="pd-chip">Blocker Spotter</span>
-        <span class="pd-chip">Roadmap Health</span>
-        <span class="pd-chip">Release Monitor</span>
-      </div>
-      <div class="pd-quote">"Standup prep used to take 20 minutes. Now I ask Bespoke and I'm done in 30 seconds."</div>
-    </div>
-    <div class="pd-right">
-      <h4>Live dashboard · Telegram staff</h4>
-      <div class="pd-widgets">
-        <div class="pdw"><span class="pdw-label">Sprint velocity</span><span class="pdw-val green">42 pts ↑</span></div>
-        <div class="pdw"><span class="pdw-label">Blockers open</span><span class="pdw-val amber">4 (2 unassigned)</span></div>
-        <div class="pdw"><span class="pdw-label">Q2 milestone</span><span class="pdw-val gold">3 weeks out</span></div>
-        <div class="pdw"><span class="pdw-label">Bug backlog</span><span class="pdw-val amber">12 open</span></div>
-      </div>
-      <div class="pd-chat">
-        <div class="pdc-header"><div class="pdc-gem">B</div><div><div class="pdc-name">Bespoke Staff</div><div class="pdc-status">● Active</div></div></div>
-        <div class="msg b"><div class="mi">Morning Priya 👋 Sprint 14 on track. 2 blockers unassigned since yesterday — auth ticket and iOS crash. Ping the engineers?</div></div>
-        <div class="msg u"><div class="mi">Yes. Also prep standup notes</div></div>
-        <div class="msg b"><div class="mi">Done. Standup doc ready in your dashboard. Release candidate clean — QA flagged 1 low-priority issue.</div></div>
-      </div>
-    </div>
+  <div class="pdpanel" id="pd-pm">
+    <div class="pdl"><div class="pdr-roman">IV.</div><h3>Product Manager · Engineer · QA</h3><div class="pd-role">Tech & Product Teams</div><p>You live across Jira, Notion, Slack, and PRs simultaneously. Your Engineer builds you a Sprint module, a Blockers module, a Roadmap Health tracker — configured around your specific squads, not a generic project management template.</p><div class="pd-chips"><span class="pd-chip">Sprint Tracker</span><span class="pd-chip">Blocker Spotter</span><span class="pd-chip">Roadmap Health</span><span class="pd-chip">Release Monitor</span></div><div class="pd-quote">"Standup prep used to take 20 minutes. Now I ask Bespoke and I'm done in 30 seconds."</div></div>
+    <div class="pdr"><h4>Live Dashboard · Telegram Staff</h4><div class="pd-widgets"><div class="pdw"><span class="pdw-label">Sprint velocity</span><span class="pdw-val green">42 pts ↑</span></div><div class="pdw"><span class="pdw-label">Blockers open</span><span class="pdw-val amber">4 (2 unassigned)</span></div><div class="pdw"><span class="pdw-label">Q2 milestone</span><span class="pdw-val gold">3 weeks out</span></div><div class="pdw"><span class="pdw-label">Bug backlog</span><span class="pdw-val amber">12 open</span></div></div><div class="pd-chat"><div class="pdc-h"><div class="pdc-av">B</div><div><div class="pdc-n">Bespoke Staff</div><div class="pdc-s">● Active</div></div></div><div class="pdmsg b"><div class="pdmi">Morning Priya 👋 Sprint 14 on track. 2 blockers unassigned since yesterday. Ping the engineers?</div></div><div class="pdmsg u"><div class="pdmi">Yes. Also prep standup notes</div></div><div class="pdmsg b"><div class="pdmi">Done. Standup doc ready in your dashboard. Release candidate clean — QA flagged 1 low-priority issue.</div></div></div></div>
   </div>
-
   <!-- CHURCH -->
-  <div class="pdepth-panel" id="pd-church">
-    <div class="pd-left">
-      <div class="pd-roman">V.</div>
-      <h3>Church · Community Manager</h3>
-      <div class="pd-role">Faith & Community</div>
-      <p>You shepherd a community. But attendance tracking, tithes, volunteer coordination, and member follow-ups can consume the best of your energy. Your calling deserves a staff as devoted as you are.</p>
-      <div class="pd-chips">
-        <span class="pd-chip">Attendance Tracker</span>
-        <span class="pd-chip">Tithe Monitor</span>
-        <span class="pd-chip">Volunteer Coord.</span>
-        <span class="pd-chip">Member Comms</span>
-      </div>
-      <div class="pd-quote">"I finally feel like a pastor again, not an administrator. My staff handles the details so I can handle the people."</div>
-    </div>
-    <div class="pd-right">
-      <h4>Live dashboard · WhatsApp staff</h4>
-      <div class="pd-widgets">
-        <div class="pdw"><span class="pdw-label">Sunday attendance</span><span class="pdw-val green">312 ↑ 8%</span></div>
-        <div class="pdw"><span class="pdw-label">Tithes this month</span><span class="pdw-val green">$18,240</span></div>
-        <div class="pdw"><span class="pdw-label">Follow-ups pending</span><span class="pdw-val amber">3 members</span></div>
-        <div class="pdw"><span class="pdw-label">Volunteers confirmed</span><span class="pdw-val gold">14 / 16</span></div>
-      </div>
-      <div class="pd-chat">
-        <div class="pdc-header"><div class="pdc-gem">B</div><div><div class="pdc-name">Bespoke Staff</div><div class="pdc-status">● Active</div></div></div>
-        <div class="msg b"><div class="mi">Morning Pastor James 👋 312 attended Sunday — strong week. Marcus Reed has missed 3 weeks. Warm message drafted for your review.</div></div>
-        <div class="msg u"><div class="mi">Send it. Who's unconfirmed for volunteers?</div></div>
-        <div class="msg b"><div class="mi">Sent ✓ Thomas and Grace unconfirmed. Grace just confirmed. Reminder sent to Thomas.</div></div>
-      </div>
-    </div>
+  <div class="pdpanel" id="pd-church">
+    <div class="pdl"><div class="pdr-roman">V.</div><h3>Church · Community Manager</h3><div class="pd-role">Faith & Community</div><p>You shepherd a community. Your Engineer builds you a Visitors module, a Members module, a Tithes tracker, a Volunteers module — all in conversation, all designed for how your specific congregation works, not how a generic church software company thinks it works.</p><div class="pd-chips"><span class="pd-chip">Attendance Tracker</span><span class="pd-chip">Tithe Monitor</span><span class="pd-chip">Volunteer Coord.</span><span class="pd-chip">Member Comms</span></div><div class="pd-quote">"I finally feel like a pastor again, not an administrator. My Engineer handles the details so I can handle the people."</div></div>
+    <div class="pdr"><h4>Live Dashboard · WhatsApp Staff</h4><div class="pd-widgets"><div class="pdw"><span class="pdw-label">Sunday attendance</span><span class="pdw-val green">312 ↑ 8%</span></div><div class="pdw"><span class="pdw-label">Tithes this month</span><span class="pdw-val green">$18,240</span></div><div class="pdw"><span class="pdw-label">Follow-ups pending</span><span class="pdw-val amber">3 members</span></div><div class="pdw"><span class="pdw-label">Volunteers confirmed</span><span class="pdw-val gold">14 / 16</span></div></div><div class="pd-chat"><div class="pdc-h"><div class="pdc-av">B</div><div><div class="pdc-n">Bespoke Staff</div><div class="pdc-s">● Active</div></div></div><div class="pdmsg b"><div class="pdmi">Morning Pastor James 👋 312 attended Sunday — strong week. Marcus Reed has missed 3 weeks. Warm message drafted for your review.</div></div><div class="pdmsg u"><div class="pdmi">Send it. Who's unconfirmed for volunteers?</div></div><div class="pdmsg b"><div class="pdmi">Sent ✓ Thomas and Grace unconfirmed. Grace just confirmed. Reminder sent to Thomas.</div></div></div></div>
   </div>
 </section>
 
-<div class="ornament"><div class="orn-line"></div><div class="orn-gem"></div><div class="orn-line r"></div></div>
-
-<!-- DATA -->
-<section class="sec" id="data">
-  <div class="rv">
-    <div class="sec-label">The data experience</div>
-    <h2 class="sec-title">Your app builds itself<br/><em>from conversation.</em></h2>
-    <p class="sec-sub">No database setup. No schema design. You talk — Bespoke structures, stores, and surfaces your data exactly as you need it.</p>
-  </div>
-  <div class="data-grid rv rv-d1">
-    <div class="data-diagram">
-      <div class="dd-label">// How your data layer is built</div>
-      <div class="df-multi">
-        <div class="df-node gold"><div class="df-node-lbl">You say</div><div class="df-node-val">"Track invoices by client"</div></div>
-        <div class="df-node gold"><div class="df-node-lbl">You say</div><div class="df-node-val">"Who missed Sunday?"</div></div>
-        <div class="df-node gold"><div class="df-node-lbl">You say</div><div class="df-node-val">"Show sprint velocity"</div></div>
-      </div>
-      <div class="df-arrow">↓ &nbsp; AI infers structure · builds your schema</div>
-      <div class="df-node cyan" style="margin-bottom:8px"><div class="df-node-lbl">Your dedicated data store</div><div class="df-node-val">Isolated. Private. Only yours.</div></div>
-      <div class="df-arrow">↓ &nbsp; Rendered as your unique dashboard</div>
-      <div class="df-multi">
-        <div class="df-node green"><div class="df-node-lbl">Widget</div><div class="df-node-val">Invoice tracker</div></div>
-        <div class="df-node green"><div class="df-node-lbl">Widget</div><div class="df-node-val">Attendance chart</div></div>
-        <div class="df-node green"><div class="df-node-lbl">Widget</div><div class="df-node-val">Sprint velocity</div></div>
-      </div>
-    </div>
-    <div class="data-points">
-      <div class="dp"><div class="dp-line"></div><div><h4>Start from scratch or connect what you have</h4><p>No import required. Just begin talking. Connect QuickBooks, Notion, or Google Sheets optionally. Your product works on day one either way.</p></div></div>
-      <div class="dp"><div class="dp-line"></div><div><h4>Schema emerges from how you work</h4><p>A church manager and a band manager both have "contacts" — but what they track is entirely different. Bespoke learns your definition, not a template.</p></div></div>
-      <div class="dp"><div class="dp-line"></div><div><h4>Every question becomes a permanent view</h4><p>Ask "what's my revenue this week" on Monday and it becomes your Monday widget. Your dashboard is built from the questions that matter to you.</p></div></div>
-      <div class="dp"><div class="dp-line"></div><div><h4>Dedicated instance — truly yours</h4><p>Post-trial, your data lives in an instance provisioned exclusively for you. Not shared, not pooled. The infrastructure is as bespoke as the product.</p></div></div>
-    </div>
-  </div>
-</section>
-
-<div class="ornament"><div class="orn-line"></div><div class="orn-gem"></div><div class="orn-line r"></div></div>
+<div class="orn"><div class="ornl"></div><div class="orng"></div><div class="ornl r"></div></div>
 
 <!-- PRICING -->
 <section class="sec" id="pricing" style="text-align:center">
   <div class="rv">
-    <div class="sec-label" style="justify-content:center">Pricing</div>
-    <h2 class="sec-title">Start free.<br/><em>Stay because it fits.</em></h2>
-    <p class="sec-sub" style="margin:0 auto">14 days to feel what software built around you actually feels like.</p>
+    <div class="slbl" style="justify-content:center">Pricing</div>
+    <h2 class="stitle">Start free.<br/><em>Stay because it fits.</em></h2>
+    <p class="ssub" style="margin:0 auto">14 days to feel what software built around you actually feels like. 74% gross margin means we're in this for the long run.</p>
   </div>
-  <div class="pricing-wrap rv rv-d1">
-    <div class="pc">
-      <div class="pc-tier">Trial</div>
-      <div class="pc-price">Free<span class="mo"> / 14 days</span></div>
-      <p class="pc-desc">Full experience. No credit card. Feel what bespoke means.</p>
-      <div class="pc-rule"></div>
-      <ul class="pc-feats">
-        <li>1 messaging channel</li>
-        <li>Full AI staff suite</li>
-        <li>Personal dashboard builder</li>
-        <li>100 messages / day</li>
-        <li>Fresh data or connect tools</li>
-      </ul>
-      <button class="pc-btn">Begin trial</button>
-    </div>
-    <div class="pc hot">
-      <div class="pc-tier">Solo</div>
-      <div class="pc-price"><sup>$</sup>39<span class="mo">/mo</span></div>
-      <p class="pc-desc">Your complete personal operating system. Dedicated. Isolated. Yours.</p>
-      <div class="pc-rule"></div>
-      <ul class="pc-feats">
-        <li>2 messaging channels</li>
-        <li>Unlimited messages</li>
-        <li>Unlimited dashboard widgets</li>
-        <li>Dedicated instance</li>
-        <li>Optional integrations</li>
-        <li>Priority support</li>
-      </ul>
-      <button class="pc-btn hot">Get Bespoke →</button>
-    </div>
-    <div class="pc">
-      <div class="pc-tier">Team</div>
-      <div class="pc-price"><sup>$</sup>99<span class="mo">/mo</span></div>
-      <p class="pc-desc">Shared workspace. Individual apps. Everyone aligned — nobody on the same dashboard.</p>
-      <div class="pc-rule"></div>
-      <ul class="pc-feats">
-        <li>Up to 5 users</li>
-        <li>All channels</li>
-        <li>Shared + private workspaces</li>
-        <li>Team AI staff</li>
-        <li>Admin controls</li>
-        <li>Custom integrations</li>
-      </ul>
-      <button class="pc-btn">Talk to us</button>
-    </div>
+  <div class="pgrid rv rv-d1">
+    <div class="pc"><div class="pc-tier">Trial</div><div class="pc-price">Free<span class="mo"> / 14 days</span></div><p class="pc-desc">Full experience. No credit card. Feel the Engineer build your first room.</p><div class="pc-rule"></div><ul class="pc-feats"><li>1 messaging channel</li><li>Full AI staff suite</li><li>Unlimited module building</li><li>100 messages / day</li><li>Fresh data — no import needed</li></ul><button class="pc-btn">Begin trial</button></div>
+    <div class="pc hot"><div class="pc-tier">Solo</div><div class="pc-price"><sup>$</sup>39<span class="mo">/mo</span></div><p class="pc-desc">Your complete personal operating system. Dedicated instance. Yours alone.</p><div class="pc-rule"></div><ul class="pc-feats"><li>2 messaging channels</li><li>Unlimited messages</li><li>Unlimited modules & CRUD</li><li>Dedicated isolated instance</li><li>Optional integrations</li><li>Priority support</li></ul><button class="pc-btn hot">Get Bespoke →</button></div>
+    <div class="pc"><div class="pc-tier">Team</div><div class="pc-price"><sup>$</sup>99<span class="mo">/mo</span></div><p class="pc-desc">Everyone aligned. Nobody on the same dashboard.</p><div class="pc-rule"></div><ul class="pc-feats"><li>Up to 5 users</li><li>All channels</li><li>Shared + private modules</li><li>Team AI staff</li><li>Admin controls</li><li>Custom integrations</li></ul><button class="pc-btn">Talk to us</button></div>
   </div>
 </section>
 
-<div class="ornament"><div class="orn-line"></div><div class="orn-gem"></div><div class="orn-line r"></div></div>
+<div class="orn"><div class="ornl"></div><div class="orng"></div><div class="ornl r"></div></div>
 
 <!-- CTA -->
-<div class="cta-wrap">
-  <div class="cta-inner rv">
-    <div class="cta-glow"></div>
+<div class="ctawrap">
+  <div class="ctainner rv">
+    <div class="cta-gl"></div><div class="cta-gr"></div>
     <h2>Your work.<br/><em>Finally yours.</em></h2>
-    <p>Join professionals who've stopped fitting their work into software<br/>and started having software fit around their work.</p>
-    <div class="email-row">
-      <input class="email-inp" type="email" placeholder="your@email.com"/>
-      <button class="email-btn">Request access →</button>
-    </div>
-    <p class="cta-note">Free 14-day trial · No credit card · Cancel anytime</p>
+    <p>Join professionals who stopped fitting their work into software<br/>and started having software fit around their work.</p>
+    <div class="erow"><input class="einp" type="email" placeholder="your@email.com"/><button class="ebtn">Request access →</button></div>
+    <p class="enote">Free 14-day trial · No credit card · Cancel anytime</p>
   </div>
 </div>
 
-<!-- FOOTER -->
 <footer>
-  <div class="foot-logo"><div class="foot-gem"></div>Bespoke</div>
-  <ul class="foot-links">
-    <li><a href="#">Privacy</a></li>
-    <li><a href="#">Terms</a></li>
-    <li><a href="#">Docs</a></li>
-    <li><a href="#">Blog</a></li>
-    <li><a href="#">Twitter</a></li>
-  </ul>
-  <p class="foot-copy">© 2026 Bespoke · Built around how you work.</p>
+  <div class="flogo"><div class="fgem"></div>Bespoke</div>
+  <ul class="flinks"><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li><li><a href="#">Docs</a></li><li><a href="#">Blog</a></li><li><a href="#">Twitter</a></li></ul>
+  <p class="fcopy">© 2026 Bespoke · Built around how you work.</p>
 </footer>
 
 <script>
-// Cursor
-const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+// ── CURSOR ──────────────────────────────────────────────────────────
+const cur=document.getElementById('cur'),curR=document.getElementById('curR');
 let mx=0,my=0,rx=0,ry=0;
 document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
-(function loop(){rx+=(mx-rx)*.11;ry+=(my-ry)*.11;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
+(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;curR.style.left=rx+'px';curR.style.top=ry+'px';requestAnimationFrame(loop)})();
+document.querySelectorAll('button,a,input').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.width='10px';cur.style.height='10px';curR.style.width='44px';curR.style.height='44px';curR.style.borderColor='rgba(201,168,76,.5)'});
+  el.addEventListener('mouseleave',()=>{cur.style.width='5px';cur.style.height='5px';curR.style.width='30px';curR.style.height='30px';curR.style.borderColor='rgba(201,168,76,.22)'});
+});
 
-// Nav
+// ── NAV ──────────────────────────────────────────────────────────────
 const nav=document.getElementById('nav');
-window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>50));
+window.addEventListener('scroll',()=>nav.classList.toggle('sc',scrollY>50));
 
-// Hero switcher
-document.querySelectorAll('.sw-tab').forEach(t=>{
+// ── HERO SWITCHER ────────────────────────────────────────────────────
+document.querySelectorAll('.pstab').forEach(t=>{
   t.addEventListener('click',()=>{
-    document.querySelectorAll('.sw-tab').forEach(x=>x.classList.remove('active'));
-    document.querySelectorAll('.sw-panel').forEach(x=>x.classList.remove('active'));
-    t.classList.add('active');
-    document.getElementById('sp-'+t.dataset.p).classList.add('active');
+    document.querySelectorAll('.pstab').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.psp').forEach(x=>x.classList.remove('on'));
+    t.classList.add('on');
+    document.getElementById('hp-'+t.dataset.p).classList.add('on');
   });
 });
 
-// Profession tabs
-document.querySelectorAll('.pdepth-tab').forEach(t=>{
+// ── PROFESSION TABS ──────────────────────────────────────────────────
+document.querySelectorAll('.pdtab').forEach(t=>{
   t.addEventListener('click',()=>{
-    document.querySelectorAll('.pdepth-tab').forEach(x=>x.classList.remove('active'));
-    document.querySelectorAll('.pdepth-panel').forEach(x=>x.classList.remove('active'));
-    t.classList.add('active');
-    document.getElementById(t.dataset.panel).classList.add('active');
+    document.querySelectorAll('.pdtab').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.pdpanel').forEach(x=>x.classList.remove('on'));
+    t.classList.add('on');
+    document.getElementById(t.dataset.panel).classList.add('on');
   });
 });
 
-// Reveal
+// ── REVEAL ───────────────────────────────────────────────────────────
 const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.1});
 document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+
+// ══════════════════════════════════════════════════════════════════════
+// INTERACTIVE PROTOTYPE ENGINE
+// ══════════════════════════════════════════════════════════════════════
+
+let chatTimer=null;
+const chatMsgs=document.getElementById('chat-msgs');
+const sbModules=document.getElementById('sb-modules');
+
+// SCENARIOS ─────────────────────────────────────────────────────────
+const SCENARIOS={
+  onboard:{
+    prof:'Dr. Priya',uprof:'Physiotherapist',label:'Dr. Priya · Physiotherapist',
+    caption:'Watch the Engineer have a listening conversation with Dr. Priya on day one.',
+    modules:[],
+    chat:[
+      {from:'b',text:"Good morning Dr. Priya 👋 I'm your Bespoke Engineer. I'm here to understand your work and build the tools you actually need. Can you walk me through what a typical Monday morning looks like for you?",delay:600},
+      {from:'u',text:"Usually I have 8-10 patients booked. I spend the first hour doing admin — checking who showed up, chasing no-shows, looking at outstanding invoices.",delay:2000},
+      {from:'b',text:"That admin hour before your first patient — that's exactly what I'm here to change. How are you currently tracking your patients and their appointments?",delay:2800},
+      {from:'u',text:"A spreadsheet mostly. And a separate app for invoices. It's a mess honestly.",delay:2000},
+      {from:'b',text:"Got it. I'm going to build you a Patients module and an Invoices module — both designed around how you work, not around how a generic clinic software thinks you work. Give me a moment...",delay:2800},
+      {from:'b',text:"✓ Done. Your Patients module is in your sidebar — I've set it up to track names, conditions, appointment dates, and treatment status. Your Invoices module tracks amounts, due dates, and payment status. Both are waiting for your first records. Want to add a patient?",delay:3500},
+    ]
+  },
+  build:{
+    prof:'Dr. Priya',uprof:'Physiotherapist',label:'Dr. Priya · Physiotherapist',
+    caption:'Watch the Engineer build a brand new module from a single request.',
+    modules:[{id:'patients',icon:'🏥',label:'Patients',room:'room-patients'}],
+    chat:[
+      {from:'b',text:"Morning Dr. Priya 👋 You have 8 appointments today — fully booked. 2 invoices are overdue from last week. Want me to send gentle reminders?",delay:600},
+      {from:'u',text:"Yes please. Also — I need somewhere to track my referral sources. I want to know which doctors are sending me the most patients.",delay:2000},
+      {from:'b',text:"Perfect idea. I'm building you a Referral Sources module right now — it'll track referring doctors, how many patients each has sent, and what conditions they typically refer for.",delay:2400},
+      {from:'b',text:"✓ Built. The Referral Sources module is live in your sidebar. I've started it with the 3 referral sources you mentioned in our first conversation — Dr. Obi, City Hospital, and the Wellness Centre. You can add records from the web app or just tell me.",delay:3200},
+      {from:'u',text:"That's exactly what I needed. Can you add a revenue column too?",delay:2000},
+      {from:'b',text:"Done ✓ I've added a 'Revenue from referrals' field to the module. The module has updated in your sidebar — your existing records are preserved. Revenue column is ready for your input.",delay:2400},
+    ]
+  },
+  proactive:{
+    prof:'Dr. Priya',uprof:'Physiotherapist',label:'Dr. Priya · Physiotherapist',
+    caption:'Your staff works proactively — without being asked. This is a morning briefing.',
+    modules:[{id:'patients',icon:'🏥',label:'Patients',room:'room-patients'},{id:'invoices',icon:'🧾',label:'Invoices',room:'room-invoices'}],
+    chat:[
+      {from:'b',text:"Good morning Dr. Priya 👋 Your Monday brief from your staff:",delay:600},
+      {from:'b',text:"📅 Today: 8 appointments confirmed, 2 slots open. Mrs Chen cancelled yesterday — I've offered her slot to 3 waitlisted patients and sent her a rebooking link.",delay:1800},
+      {from:'b',text:"🧾 Finance: 4 invoices overdue 7+ days (total $780). I've sent gentle reminders to all 4. Mr Kapoor hasn't responded in 14 days — recommend escalating.",delay:2400},
+      {from:'b',text:"👥 Patient watch: David Okonkwo hasn't booked a follow-up after his discharge last week. Based on his treatment plan, he should. Want me to send a gentle check-in?",delay:2400},
+      {from:'u',text:"Yes, send the check-in. And escalate Kapoor.",delay:1600},
+      {from:'b',text:"Done ✓ Check-in sent to David, escalation message sent to Mr Kapoor. Have a great Monday — your first patient is at 9am.",delay:2000},
+    ]
+  },
+  church:{
+    prof:'Pastor James',uprof:'Church Manager',label:'Pastor James · Church Manager',
+    caption:'Pastor James manages his congregation from WhatsApp — powered by Bespoke.',
+    modules:[{id:'visitors',icon:'🙏',label:'Visitors',room:'room-visitors'}],
+    chat:[
+      {from:'b',text:"Morning Pastor James 👋 Sunday was a strong week — 312 attended, up 8% from last Sunday. Your tithes came in at $18,240.",delay:600},
+      {from:'b',text:"I've flagged 3 follow-ups for you this week: Marcus Reed (absent 3 Sundays), Ann & David Okonkwo (first-time visitors from March), and young Theresa Williams who visited alone last Sunday.",delay:2000},
+      {from:'u',text:"Draft a warm message for Marcus — something personal.",delay:1600},
+      {from:'b',text:"Draft ready in your Visitors module for your review: \n\n'Marcus, we've been thinking of you. You've been part of our community for a while now and your presence matters to us. If there's anything on your heart, our door is always open. — Pastor James'\n\nSend it or edit first?",delay:2800},
+      {from:'u',text:"Send it. Also — who's still unconfirmed for this Sunday's volunteers?",delay:1600},
+      {from:'b',text:"Sent ✓ Unconfirmed volunteers: Thomas Adeyemi and Grace Williams. I've sent both a confirmation request. Grace just confirmed. Waiting on Thomas — want me to follow up directly?",delay:2200},
+    ]
+  },
+  gtm:{
+    prof:'Alex Chen',uprof:'GTM Leader',label:'Alex Chen · VP Sales',
+    caption:'Alex gets his board-ready pipeline brief from the Engineer every morning.',
+    modules:[{id:'pipeline',icon:'📈',label:'Pipeline',room:'room-pipeline'}],
+    chat:[
+      {from:'b',text:"Morning Alex 👋 Q2 pipeline sits at $840K — up 22% vs target. Win rate is 34% MTD, up 4% from last month. The new deck is working.",delay:600},
+      {from:'b',text:"⚠ 3 deals stalled 14+ days: Acme ($80K), TechCorp ($45K), DataFlow ($30K). Talking points drafted for each based on last call notes and competitor intel. Want me to flag the reps?",delay:2000},
+      {from:'u',text:"Yes, flag them. And prep my board summary for Thursday.",delay:1400},
+      {from:'b',text:"Done. Flagged reps on Slack with context. Board summary draft in your Pipeline module — it covers Q2 vs target, win/loss breakdown, at-risk deals, and a Q3 forecast. Ready for your review.",delay:2600},
+      {from:'u',text:"What's our CAC looking like vs last month?",delay:1400},
+      {from:'b',text:"CAC is $312 this month — down $40 from last month (11% improvement). Primarily driven by the inbound SEO campaign performing better than paid. I'll add a CAC trend widget to your dashboard if you want to track this weekly?",delay:2400},
+      {from:'u',text:"Yes do that",delay:1000},
+      {from:'b',text:"✓ CAC Tracker module updated — weekly trend view added. It's live in your sidebar now.",delay:1600},
+    ]
+  }
+};
+
+// STATE ───────────────────────────────────────────────────────────────
+let currentScene='onboard';
+let chatQueue=[];
+let chatRunning=false;
+
+// INIT SIDEBAR MODULES ────────────────────────────────────────────────
+function renderSidebar(modules){
+  sbModules.innerHTML='';
+  modules.forEach((m,i)=>{
+    const div=document.createElement('div');
+    div.className='sb-item';
+    div.dataset.room=m.room;
+    div.innerHTML=`<span class="sb-icon">${m.icon}</span>${m.label}<span class="sb-new">NEW</span>`;
+    div.addEventListener('click',()=>switchRoom(m.room,div));
+    sbModules.appendChild(div);
+    setTimeout(()=>div.querySelector('.sb-new')&&div.querySelector('.sb-new').remove(),4000+i*500);
+  });
+}
+
+// SWITCH ROOM ─────────────────────────────────────────────────────────
+function switchRoom(roomId,clickedEl){
+  document.querySelectorAll('.room').forEach(r=>r.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('active'));
+  const room=document.getElementById(roomId);
+  if(room)room.classList.add('active');
+  if(clickedEl)clickedEl.classList.add('active');
+  else{
+    const chatItem=document.querySelector('.sb-item[data-room="chat"]');
+    if(chatItem&&roomId==='room-chat')chatItem.classList.add('active');
+  }
+}
+
+// ADD MESSAGE ─────────────────────────────────────────────────────────
+function addMsg(from,text,withTyping=true){
+  return new Promise(resolve=>{
+    if(from==='b'&&withTyping){
+      const tyDiv=document.createElement('div');
+      tyDiv.className='msg b';
+      tyDiv.innerHTML='<div class="typing"><span></span><span></span><span></span></div>';
+      chatMsgs.appendChild(tyDiv);
+      chatMsgs.scrollTop=chatMsgs.scrollHeight;
+      const delay=Math.min(800+text.length*18,2800);
+      setTimeout(()=>{
+        tyDiv.remove();
+        pushBubble(from,text);
+        resolve();
+      },delay);
+    }else{
+      pushBubble(from,text);
+      resolve();
+    }
+  });
+}
+
+function pushBubble(from,text){
+  const div=document.createElement('div');
+  div.className=`msg ${from}`;
+  const time=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  div.innerHTML=`<div class="mbubble">${text.replace(/\n/g,'<br/>')}</div><div class="mtime">${time}${from==='u'?' ✓✓':''}</div>`;
+  chatMsgs.appendChild(div);
+  div.style.opacity='0';div.style.transform='translateY(8px)';
+  requestAnimationFrame(()=>{div.style.transition='all .35s ease';div.style.opacity='1';div.style.transform='translateY(0)'});
+  chatMsgs.scrollTop=chatMsgs.scrollHeight;
+}
+
+// RUN SCENARIO ────────────────────────────────────────────────────────
+async function runScenario(key){
+  if(chatTimer)clearTimeout(chatTimer);
+  chatRunning=false;
+
+  const scene=SCENARIOS[key];
+  currentScene=key;
+
+  // update UI labels
+  document.getElementById('htb-prof').textContent=scene.label;
+  document.getElementById('sb-uname').textContent=scene.prof;
+  document.getElementById('sb-uprof').textContent=scene.uprof;
+  document.getElementById('proto-caption').textContent=scene.caption;
+
+  // clear chat
+  chatMsgs.innerHTML='';
+
+  // render sidebar
+  renderSidebar(scene.modules);
+
+  // switch to chat room
+  switchRoom('room-chat');
+  document.querySelector('.sb-item[data-room="chat"]').classList.add('active');
+
+  // show building indicator briefly if modules will be added mid-convo
+  const willBuild=scene.chat.some(m=>m.text&&m.text.includes('Built'));
+
+  // run chat sequence
+  chatRunning=true;
+  let cumulativeDelay=0;
+  for(let i=0;i<scene.chat.length;i++){
+    const msg=scene.chat[i];
+    cumulativeDelay+=msg.delay;
+    await new Promise(r=>setTimeout(r,msg.delay));
+    if(!chatRunning)break;
+    await addMsg(msg.from,msg.text);
+
+    // if this message announces a new module being built, add it to sidebar
+    if(msg.text&&(msg.text.includes('✓ Built')||msg.text.includes('✓ Done')||msg.text.includes('is live in your sidebar')||msg.text.includes('is in your sidebar'))){
+      // find what module was built from context
+      if(key==='build'&&i>=3){
+        const newMod={id:'referrals',icon:'🔗',label:'Referrals',room:'room-patients'};
+        const existing=scene.modules.slice();
+        existing.push(newMod);
+        renderSidebar(existing);
+      }
+    }
+  }
+}
+
+// SCENE BUTTONS ───────────────────────────────────────────────────────
+document.querySelectorAll('.scene-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.scene-btn').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    runScenario(btn.dataset.scene);
+  });
+});
+
+// SIDEBAR ITEM CLICKS ─────────────────────────────────────────────────
+document.querySelector('.sb-item[data-room="chat"]').addEventListener('click',function(){
+  switchRoom('room-chat',this);
+});
+
+// AUTO START ──────────────────────────────────────────────────────────
+setTimeout(()=>runScenario('onboard'),800);
+
 </script>
 </body>
 </html>
